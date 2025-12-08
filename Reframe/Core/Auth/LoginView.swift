@@ -3,7 +3,16 @@ import SwiftUI
 struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
-    @Environment(\.userSession) var session
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @Environment(UserSession.self) var session
+    
+    private var isShowingAlert: Binding<Bool> {
+        Binding(
+            get: { errorMessage != nil },
+            set: { _,_ in errorMessage = nil }
+        )
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -15,10 +24,7 @@ struct LoginView: View {
                         Spacer()
                         LoginHeaderView()
 
-                        LoginFormView(email: $email, password: $password, mode: .login, onSubmit: {
-                            print("Sign in tapped")
-                            session.login(email: email, password: password)
-                        })
+                        LoginFormView(email: $email, password: $password, isLoading: $isLoading, mode: .login, onSubmit: handleLogin)
 
                         LegalFooterView()
                         Spacer()
@@ -29,6 +35,23 @@ struct LoginView: View {
                 }
             }
         }.ignoresSafeArea()
+        .alert("Login Failed", isPresented: isShowingAlert) {
+            Button("OK") {}
+        } message: {
+            Text(errorMessage ?? "An unexpected error occurred.")
+        }
+    }
+    
+    private func handleLogin() {
+        Task {
+            isLoading = true
+            do {
+                try await session.login(email: email, password: password)
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+            isLoading = false
+        }
     }
 }
 
@@ -41,9 +64,5 @@ enum AuthMode {
 #Preview {
     let session = UserSession()
     LoginView()
-        .environment(\.userSession, session)
+        .environment(session)
 }
-
-
-
-

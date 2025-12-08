@@ -53,11 +53,18 @@ struct PasswordCriteriaView: View {
 
 
 struct SignUpView: View {
-    @Environment(\.userSession) var session
+    @Environment(UserSession.self) var session
     @State private var email = ""
     @State private var password = ""
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    
+    private var isShowingAlert: Binding<Bool> {
+        Binding(
+            get: { errorMessage != nil },
+            set: { _,_ in errorMessage = nil }
+        )
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -69,22 +76,7 @@ struct SignUpView: View {
                         Spacer()
                         LoginHeaderView()
                         
-                        LoginFormView(email: $email, password: $password, mode: .signup, onSubmit: {
-                            if !isValidEmail(email) {
-                                    alertMessage = "Adresse email invalide"
-                                    showAlert = true
-                                    return
-                                }
-
-                                // Vérifier mot de passe
-                                if !isValidPassword(password) {
-                                    alertMessage = "Mot de passe invalide : minimum 8 caractères, 1 majuscule, 1 chiffre, 1 caractère spécial."
-                                    showAlert = true
-                                    return
-                                }
-                            print("Signup tapped") // À retirer
-                            session.signup(name: "New User", email: email, password: password)
-                        })
+                        LoginFormView(email: $email, password: $password, isLoading: $isLoading, mode: .signup, onSubmit: handleSignUp)
                         
                         LegalFooterView()
                         Spacer()
@@ -93,6 +85,34 @@ struct SignUpView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }.ignoresSafeArea()
         }
+        .alert("Sign Up Failed", isPresented: isShowingAlert) {
+            Button("OK") {}
+        } message: {
+            Text(errorMessage ?? "An unexpected error occurred.")
+        }
+    }
+    
+    private func handleSignUp() {
+        if !isValidEmail(email) {
+            errorMessage = "Please enter a valid email address."
+            return
+        }
+
+        if !isValidPassword(password) {
+            errorMessage = "Your password does not meet the required criteria."
+            return
+        }
+
+        Task {
+            isLoading = true
+            do {
+                try await session.signup(name: "New User", email: email, password: password)
+                // On success, the RootView will automatically switch to the main app.
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+            isLoading = false
+        }
     }
 }
 
@@ -100,5 +120,5 @@ struct SignUpView: View {
 #Preview {
     let session = UserSession()
     SignUpView()
-        .environment(\.userSession, session)
+        .environment(session)
 }

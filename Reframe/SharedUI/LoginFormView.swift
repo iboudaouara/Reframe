@@ -3,6 +3,7 @@ import SwiftUI
 struct LoginFormView: View {
     @Binding var email: String
     @Binding var password: String
+    @Binding var isLoading: Bool
     @FocusState private var passwordFieldIsFocused: Bool
 
     let mode: AuthMode
@@ -19,6 +20,12 @@ struct LoginFormView: View {
             }
 
             CustomButton(title: mode == .login ? "Login" : "Sign Up", action: onSubmit)
+                .disabled(isLoading)
+                .overlay {
+                    if isLoading {
+                        ProgressView()
+                    }
+                }
         }
         .padding(.horizontal, 32)
     }

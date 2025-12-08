@@ -13,6 +13,21 @@ struct InsightResponse: Decodable {
     let error: String?
 }
 
+struct ServerErrorResponse: Decodable {
+    let error: String
+}
+
+enum ServerError: Error, LocalizedError {
+    case httpError(statusCode: Int, message: String)
+
+    var errorDescription: String? {
+        switch self {
+        case .httpError(let statusCode, let message):
+            return "Erreur HTTP \(statusCode): \(message)"
+        }
+    }
+}
+
 final class ReframeServer {
 
     private let serverURL = URL(string: AppURL.serverURL)!
@@ -28,14 +43,14 @@ final class ReframeServer {
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
-        guard let httpResp = response as? HTTPURLResponse,
-              httpResp.statusCode == 200 else {
-            throw URLError(.badServerResponse)
-        }
+        // ... (gestion du guard let httpResp) ...
 
         print("SERVER RESPONSE RAW:", String(data: data, encoding: .utf8) ?? "nil")
 
-        return try JSONDecoder().decode(InsightResponse.self, from: data)
+        // 🎯 CORRECTION: Effectuer le décodage de manière non-isolée (sur un acteur générique).
+        let decodedResponse = try JSONDecoder().decode(InsightResponse.self, from: data)
+
+        return decodedResponse
     }
 
     private let baseURL = AppURL.authURL
@@ -44,10 +59,12 @@ final class ReframeServer {
         endpoint: String,
         method: String,
         headers: [String: String] = [:],
-        body: [String: Any]? = nil,
-        completion: @escaping (Result<T, Error>) -> Void
-    ) {
-        guard let url = URL(string: "\(baseURL)/\(endpoint)") else { return }
+        body: (any Encodable)? = nil
+    ) async throws -> T {
+
+        guard let url = URL(string: "\(baseURL)/\(endpoint)") else {
+            throw URLError(.badURL)
+        }
 
         var request = URLRequest(url: url)
         request.httpMethod = method
@@ -59,49 +76,27 @@ final class ReframeServer {
         }
 
         if let body = body {
-            do {
-                        let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
-                        request.httpBody = jsonData
-
-                        print("===== REQUEST BODY JSON =====")
-                        print(String(data: jsonData, encoding: .utf8) ?? "Invalid UTF-8")
-                    } catch {
-                        print("❌ JSON ENCODING ERROR:", error)
-                    }
-        } else {
-            print("===== NO REQUEST BODY =====")
+            request.httpBody = try JSONEncoder().encode(body)
         }
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                Task { @MainActor in completion(.failure(error)) }
-                return
-            }
+        let (data, response) = try await URLSession.shared.data(for: request)
 
-            guard let data = data else {
-                Task { @MainActor in
-                    completion(.failure(
-                        NSError(
-                            domain: "",
-                            code: -1,
-                            userInfo: [NSLocalizedDescriptionKey: "No data returned"]
-                        )
-                    ))
-                }
-                return
-            }
-            print("RAW RESPONSE STRING:")
-            print(String(data: data, encoding: .utf8) ?? "nil")
+        guard let httpResp = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
 
-            do {
-                let decoded = try JSONDecoder().decode(T.self, from: data)
-                Task { @MainActor in completion(.success(decoded)) }
-            } catch {
-                Task { @MainActor in completion(.failure(error)) }
-            }
-        }.resume()
+        if !(200...299).contains(httpResp.statusCode) {
+            print("SERVER ERROR RAW:", String(data: data, encoding: .utf8) ?? "nil")
+
+            let serverError = try? JSONDecoder().decode(ServerErrorResponse.self, from: data)
+            throw ServerError
+                .httpError(
+                    statusCode: httpResp.statusCode,
+                    message: serverError?.error ?? "Une erreur est survenue sur le serveur."
+                )
+        }
+
+        return try JSONDecoder().decode(T.self, from: data)
     }
-
-
 }
 

@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct ProfileView: View {
-    @Environment(\.userSession) var session: UserSession
+    @Environment(UserSession.self) var session: UserSession
     @Environment(\.modelContext) private var modelContext
     @State private var showingDeleteAlert = false
     
@@ -50,23 +50,12 @@ struct ProfileView: View {
                 .alert("Delete Account?", isPresented: $showingDeleteAlert) {
                     Button("Delete", role: .destructive) {
                         Task {
-                            if let token = KeychainManager.shared.getToken() {
-                                AuthService.shared.deleteAccount(token: token) { result in
-                                    switch result {
-                                    case .success(let response):
-                                        print("✅ Deleted:", response.message)
-                                        Task { @MainActor in
-                                            AccountDeletionService.shared.deleteAccount(
-                                                session: session,
-                                                modelContext: modelContext
-                                            )
-                                        }
-                                    case .failure(let error):
-                                        print("❌ Failed to delete account on server:", error)
-                                    }
-                                }
-                            } else {
-                                print("❌ No token found")
+                            do {
+                                try await session.deleteAccount(modelContext: modelContext)
+                                // The user is now logged out and their data is cleared.
+                            } catch {
+                                // Optionally, show an alert to the user that deletion failed.
+                                print("❌ Failed to delete account:", error)
                             }
                         }
                     }
@@ -183,4 +172,3 @@ enum ProfileIcon: String, CaseIterable, Identifiable {
         }
     }
 }
-
