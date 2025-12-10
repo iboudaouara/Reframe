@@ -26,10 +26,6 @@ struct RootView: View {
             } else {
                 AuthView()
             }
-        }.onAppear(){
-            Task {
-                await session.checkSessionStatus()
-            }
         }
     }
 }
@@ -40,7 +36,6 @@ struct LoadingView: View {
             ProgressView("Vérification de la session...")
                 .progressViewStyle(.circular)
                 .padding()
-
             Text("Reframe")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -50,8 +45,8 @@ struct LoadingView: View {
         .background(Color(.systemBackground))
     }
 }
-struct MainTabView: View {
 
+struct MainTabView: View {
     @Environment(UserSession.self) var session: UserSession
 
     var body: some View {
@@ -60,12 +55,10 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Insight", systemImage: "lightbulb")
                 }
-
             HistoryView()
                 .tabItem {
                     Label("History", systemImage: "clock")
                 }
-
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person")

@@ -36,10 +36,11 @@ extension SignInWithAppleController: ASAuthorizationControllerDelegate, ASAuthor
 
         let userID = appleID.user
         let name = appleID.fullName?.givenName ?? "Apple User"
-        let email = appleID.email // may be nil after first login
+        let email = appleID.email
 
-        // **Single call** to session, backend handles signup/login
-        session.loginWithApple(userIdentifier: userID, email: email ?? "", fullName: name)
+        Task {
+            try await session.loginWithApple(userIdentifier: userID, email: email ?? "", fullName: name)
+        }
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {

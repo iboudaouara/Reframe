@@ -3,8 +3,8 @@ import SwiftUI
 import AuthenticationServices
 
 struct AppleSignInButton: View {
-
-    @Environment(\.userSession) var userSession
+    
+    @Environment(UserSession.self) var userSession
     
     var body: some View {
         SignInWithAppleButton { request in
@@ -16,8 +16,10 @@ struct AppleSignInButton: View {
                     let userId = credential.user
                     let email = credential.email
                     let fullName = credential.fullName?.givenName
-                    userSession.loginWithApple(userIdentifier: userId, email: email, fullName: fullName)
-                }
+                    Task {
+                        // userSession.loginWithApple est @MainActor, donc l'appel est sûr.
+                        try await userSession.loginWithApple(userIdentifier: userId, email: email, fullName: fullName)
+                    }                }
             case .failure(let error):
                 print("Apple login failed: \(error)")
             }

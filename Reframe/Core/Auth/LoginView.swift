@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @State private var firstName = ""
+    @State private var lastName = ""
     @State private var email = ""
     @State private var password = ""
     @State private var isLoading = false
@@ -24,7 +26,15 @@ struct LoginView: View {
                         Spacer()
                         LoginHeaderView()
 
-                        LoginFormView(email: $email, password: $password, isLoading: $isLoading, mode: .login, onSubmit: handleLogin)
+                        LoginFormView(
+                            email: $email,
+                            password: $password,
+                            isLoading: $isLoading,
+                            firstName: $firstName,
+                            lastName: $lastName,  
+                            mode: .login,
+                            onSubmit: handleLogin
+                        )
 
                         LegalFooterView()
                         Spacer()

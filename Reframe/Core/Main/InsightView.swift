@@ -8,6 +8,8 @@ struct InsightView: View {
     @State private var controller = InsightController()
     @State private var showSaveConfirmation = false
 
+    @Environment(UserSession.self) var session 
+
     var body: some View {
         ZStack {
             Color.blue.opacity(0.6).ignoresSafeArea()
@@ -104,35 +106,63 @@ struct InsightView: View {
             }
         }
     }
-    private func saveInsight() {
-            guard let insight = controller.generatedInsight, !userInput.isEmpty else { return }
+    // Fichier: InsightView.swift
 
+    // Fichier: Reframe/Core/Main/InsightView.swift (dans la struct InsightView)
+
+    // ... (Ajouter la dépendance)
+    // ...
+
+        private func saveInsight() {
+            guard let insightText = controller.generatedInsight,
+                  !userInput.isEmpty,
+                  let token = session.user?.token
+                  else {
+                controller.errorMessage = "You must be logged in to save insights."
+                return
+            }
+
+            // 1. Création de l'insight local avec statut .pending
             let newInsight = Insight(
                 userThought: userInput,
-                generatedInsight: insight
+                generatedInsight: insightText,
+                syncStatus: .pending
             )
-
             modelContext.insert(newInsight)
-
-            // Sauvegarder immédiatement
+            // Sauvegarde locale initiale
             try? modelContext.save()
 
-            // Afficher la confirmation
-            withAnimation {
-                showSaveConfirmation = true
-            }
+            // 2. Tentative de synchronisation immédiate
+            Task {
+                do {
+                    // L'appel au service met à jour l'insight local (serverId et syncStatus = .synced)
+                    try await InsightService.shared.uploadInsight(insight: newInsight, token: token)
 
-            // Réinitialiser après 2 secondes
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                withAnimation {
-                    showSaveConfirmation = false
-                    userInput = ""
-                    controller.generatedInsight = nil
+                    // ... (Afficher confirmation et réinitialiser le champ) ...
+                    withAnimation {
+                        showSaveConfirmation = true
+                    }
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showSaveConfirmation = false
+                            userInput = ""
+                            controller.generatedInsight = nil
+                        }
+                    }
+                    print("✅ Insight saved and synced.")
+
+                } catch {
+                    // 3. Gérer l'échec de la synchronisation serveur
+                    newInsight.syncStatus = .error
+                    try? modelContext.save() // Sauvegarder le statut d'erreur
+
+                    print("❌ Erreur de synchronisation serveur:", error)
+                    controller.errorMessage = "Insight saved locally, but failed to sync: \(error.localizedDescription)"
                 }
             }
-
-            print("✅ Insight saved to database")
         }
+    // ...
 }
 
 

@@ -3,9 +3,22 @@ import SwiftData
 
 struct User: Decodable {
     let id: String
-    let name: String
+    let firstName: String
+    let lastName: String
+    //let name: String
     let email: String
     let token: String
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case email
+        case token
+    }
+    var fullName: String {
+        "\(firstName) \(lastName)"
+    }
 }
 
 @Observable final class UserSession {
@@ -15,8 +28,23 @@ struct User: Decodable {
     var selectedAvatar: ProfileIcon = .avatar1
     var isPickerPresented: Bool = false
     private let authService = AuthService.shared
+    private let insightService = InsightService.shared
 
-    // A custom error enum for session-related failures
+    @MainActor
+    private func completeAuthentication(for user: User) {
+        self.user = user
+        self.isLoggedIn = true
+        KeychainManager.shared.saveToken(user.token)
+    }
+    
+    @MainActor
+    func synchronizeIfLoggedIn(modelContext: ModelContext) async {
+        guard isLoggedIn, let token = user?.token else {
+            return
+        }
+        try? await insightService.synchronize(modelContext: modelContext, token: token)
+    }
+
     enum SessionError: LocalizedError {
         case missingToken
 
@@ -29,12 +57,10 @@ struct User: Decodable {
     }
 
     init() {
-
         self.isLoading = true
         Task {
             await checkSessionStatus()
         }
-
     }
 
     func triggerEditAvatar() {
@@ -48,14 +74,19 @@ struct User: Decodable {
     }
 
     @MainActor
-    func signup(name: String, email: String, password: String) async throws {
-        let user = try await AuthService.shared.signup(name: name, email: email, password: password)
+    func signup(firstName: String, lastName: String, email: String, password: String) async throws {
+        let user = try await AuthService.shared.signup(firstName: firstName,
+                                                       lastName: lastName, email: email, password: password)
         completeAuthentication(for: user)
     }
 
     @MainActor
     func loginWithApple(userIdentifier: String, email: String?, fullName: String?) async throws {
-        let user = try await AuthService.shared.loginWithApple(userIdentifier: userIdentifier, email: email, fullName: fullName)
+        let user = try await AuthService.shared.loginWithApple(
+            userIdentifier: userIdentifier,
+            email: email,
+            fullName: fullName
+        )
         completeAuthentication(for: user)
     }
 
@@ -66,8 +97,6 @@ struct User: Decodable {
         self.isLoggedIn = false
     }
 
-    // Fichier: UserSession.swift
-
     @MainActor
     func checkSessionStatus() async {
         self.isLoading = true
@@ -77,13 +106,9 @@ struct User: Decodable {
             self.isLoading = false
         }
 
-        // 🎯 CORRECTION: Utilisation de Task.detached pour exécuter la méthode synchrone
-        // de Keychain en arrière-plan, rendant l'appel conforme au contexte async.
-
         let token = await Task.detached {
-                // Exécute la méthode synchrone sur un thread non-bloquant
             return await KeychainManager.shared.getToken()
-            }.value
+        }.value
 
         guard let validToken = token else {
             self.isLoggedIn = false
@@ -92,7 +117,6 @@ struct User: Decodable {
         }
 
         do {
-            // Utilise le token validé
             let user = try await authService.verifyTokenAndFetchUser(token: validToken)
 
             self.user = user
@@ -109,21 +133,10 @@ struct User: Decodable {
             throw SessionError.missingToken
         }
 
-        // 1. Delete account on the server
         _ = try await AuthService.shared.deleteAccount(token: token)
 
-        // 2. Delete all local data
         try modelContext.delete(model: Insight.self)
 
-        // 3. Log out locally
         self.logout()
-    }
-
-    // Private helper to handle the final steps of authentication
-    @MainActor
-    private func completeAuthentication(for user: User) {
-        self.user = user
-        self.isLoggedIn = true
-        KeychainManager.shared.saveToken(user.token)
     }
 }

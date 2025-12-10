@@ -20,5 +20,21 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E074E0BC-9385-42CA-ABC7-4EA2CCBEE7A0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../var/folders/3x/zpyrcll577b7pnhdcvxwlbr40000gn/T/swift-generated-sources/@__swiftmacro_7Reframe0025InsightServiceswift_jqFBgfMX60_23_33_59B42EC039C572825EC627293DA83354Ll9PredicatefMf_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1"
+            endingLineNumber = "1"
+            landmarkName = "uploadPendingInsights(modelContext:token:)"
+            landmarkType = "37">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

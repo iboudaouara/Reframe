@@ -90,6 +90,9 @@
     "Erreur: %@" : {
 
     },
+    "First Name" : {
+
+    },
     "Generate Insight" : {
       "localizations" : {
         "fr" : {
@@ -194,6 +197,9 @@
         }
       }
     },
+    "Last Name" : {
+
+    },
     "Log and reflect on your daily thoughts." : {
       "localizations" : {
         "fr" : {
@@ -220,6 +226,9 @@
           }
         }
       }
+    },
+    "Login Failed" : {
+
     },
     "Logout" : {
       "localizations" : {
@@ -250,6 +259,9 @@
           }
         }
       }
+    },
+    "OK" : {
+
     },
     "or Login with" : {
       "extractionState" : "manual",
@@ -360,6 +372,9 @@
         }
       }
     },
+    "Sign Up Failed" : {
+
+    },
     "Stay on track with gentle reminders." : {
       "localizations" : {
         "fr" : {
@@ -430,6 +445,9 @@
 
     },
     "Une lettre minuscule" : {
+
+    },
+    "Vérification de la session..." : {
 
     },
     "Welcome!" : {

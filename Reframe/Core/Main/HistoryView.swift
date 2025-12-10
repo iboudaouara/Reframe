@@ -5,7 +5,8 @@ struct HistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Insight.timestamp, order: .reverse) private var insights: [Insight]
     @State private var selectedInsight: Insight?
-
+    @Environment(UserSession.self) var session: UserSession
+    
     var body: some View {
 
             Group {
@@ -59,13 +60,48 @@ struct HistoryView: View {
         }
     }
 
-    private func deleteInsights(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(insights[index])
+    // Fichier: HistoryView.swift (dans la struct HistoryView)
+
+
+        private func deleteInsights(offsets: IndexSet) {
+            guard let token = session.user?.token else {
+                print("Token manquant. Suppression locale seulement.")
+                deleteLocally(offsets: offsets)
+                return
+            }
+
+            Task {
+                for index in offsets {
+                    let insight = insights[index]
+
+                    // 1. Tente de supprimer sur le serveur si un serverId est présent
+                    if let serverId = insight.serverId {
+                        do {
+                            try await InsightService.shared.deleteInsight(id: serverId, token: token)
+                            print("✅ Insight \(serverId) supprimé du serveur.")
+                        } catch {
+                            print("❌ Échec de la suppression sur le serveur pour l'insight \(serverId): \(error.localizedDescription)")
+                            // Si la suppression échoue, nous supprimons localement de toute façon,
+                            // mais l'insight pourrait réapparaître à la prochaine synchro si le serveur n'est pas cohérent.
+                        }
+                    }
+
+                    // 2. Suppression locale
+                    modelContext.delete(insight)
+                }
+                try? modelContext.save()
             }
         }
-    }
+
+        private func deleteLocally(offsets: IndexSet) {
+            withAnimation {
+                for index in offsets {
+                    modelContext.delete(insights[index])
+                }
+            }
+            try? modelContext.save()
+        }
+    // ...
 }
 
 

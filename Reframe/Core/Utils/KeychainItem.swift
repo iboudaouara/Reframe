@@ -47,7 +47,6 @@ struct KeychainItem {
 struct KeychainKeys {
     static let tokenService = "com.reframe.apptoken"
     static let tokenAccount = "accessToken"
-    // ...
 }
 
 final class KeychainManager {
