@@ -69,8 +69,6 @@ struct SignUpView: View {
             return
         }
 
-        let fullName = "\(firstName) \(lastName)".trimmingCharacters(in: .whitespaces)
-
         Task {
             isLoading = true
             do {

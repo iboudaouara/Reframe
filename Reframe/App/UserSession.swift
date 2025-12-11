@@ -148,6 +148,22 @@ struct User: Decodable {
             print("❌ Erreur lors de la suppression des insights locaux:", error)
         }
     }
+
+    func observeSessionExpiration() {
+            NotificationCenter.default.addObserver(
+                forName: .userSessionExpired,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task(){
+                    await self?.logout()
+                }
+            }
+        }
+}
+
+extension Notification.Name {
+    static let userSessionExpired = Notification.Name("userSessionExpired")
 }
 
 // verify-token

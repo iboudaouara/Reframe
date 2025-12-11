@@ -3,7 +3,7 @@ import SwiftUI
 final class AuthService : AuthServiceProtocol {
     static let shared = AuthService()
     let server = ReframeServer.shared
-
+    
     func login(email: String, password: String) async throws -> User {
         try await server.request(endpoint: "login", method: "POST", body: ["email": email, "password": password])
     }

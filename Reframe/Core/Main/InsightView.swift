@@ -5,10 +5,10 @@ struct InsightView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State private var userInput: String = ""
-    @State private var controller = InsightController()
+    //@State private var controller = InsightController()
     @State private var showSaveConfirmation = false
-
-    @Environment(UserSession.self) var session 
+    private let insightService = InsightService.shared
+    @Environment(UserSession.self) var session
 
     var body: some View {
         ZStack {
@@ -43,9 +43,11 @@ struct InsightView: View {
                         .padding(.horizontal, 32)
 
                     Button(action: {
-                        controller.generateInsight(from: userInput)
+                        Task(){do{try await insightService.generateInsight(from: userInput)}catch{print(error)
+                        }}
+
                     }) {
-                        if controller.isLoading {
+                        if insightService.isLoading {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                 .frame(maxWidth: .infinity)
@@ -65,7 +67,7 @@ struct InsightView: View {
                         }
                     }
 
-                    if let insight = controller.generatedInsight {
+                    if let insight = insightService.generatedInsight {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Text("Insight:")
@@ -95,7 +97,7 @@ struct InsightView: View {
                         .transition(.opacity.combined(with: .slide))
                     }
 
-                    if let error = controller.errorMessage {
+                    if let error = insightService.errorMessage {
                         Text("Erreur: \(error)")
                             .foregroundColor(.red)
                             .padding(.horizontal, 32)
@@ -114,11 +116,11 @@ struct InsightView: View {
     // ...
 
         private func saveInsight() {
-            guard let insightText = controller.generatedInsight,
+            guard let insightText = insightService.generatedInsight,
                   !userInput.isEmpty,
                   let token = session.user?.token
                   else {
-                controller.errorMessage = "You must be logged in to save insights."
+                insightService.errorMessage = "You must be logged in to save insights."
                 return
             }
 
@@ -147,7 +149,7 @@ struct InsightView: View {
                         withAnimation {
                             showSaveConfirmation = false
                             userInput = ""
-                            controller.generatedInsight = nil
+                            insightService.generatedInsight = nil
                         }
                     }
                     print("✅ Insight saved and synced.")
@@ -158,7 +160,7 @@ struct InsightView: View {
                     try? modelContext.save() // Sauvegarder le statut d'erreur
 
                     print("❌ Erreur de synchronisation serveur:", error)
-                    controller.errorMessage = "Insight saved locally, but failed to sync: \(error.localizedDescription)"
+                    insightService.errorMessage = "Insight saved locally, but failed to sync: \(error.localizedDescription)"
                 }
             }
         }

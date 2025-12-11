@@ -5,8 +5,57 @@ final class InsightService {
     static let shared = InsightService()
     private let server = ReframeServer.shared
 
-    private init() {}
+    var generatedInsight: String?
+    var isLoading: Bool = false
+    var errorMessage: String?
+    
+    @MainActor
+    func generateInsight(from thought: String) async throws -> String {
+        guard !thought.isEmpty else { return ""}
 
+        isLoading = true
+        //errorMessage = nil
+
+        Task {
+            do {
+                do {
+                    let response = try await server.generateInsight(from: thought)
+                    if let reply = response.reply {
+                        self.generatedInsight = reply
+
+                    } else if let error = response.error {
+                        self.errorMessage = error
+                    } else {
+                        self.errorMessage = "Server returned an invalid response."
+                    }
+                }
+            }
+        }
+        let response: InsightResponse = try await server.generateInsight(from: thought)
+/*
+        if let reply = response.reply {
+            self.generatedInsight = reply
+            return reply
+        } else if let error = response.error {
+            throw InsightError.generationFailed(error)
+        } else {
+            throw InsightError.invalidResponse
+        }*/
+        return "";
+    }
+    enum InsightError: LocalizedError {
+        case generationFailed(String)
+        case invalidResponse
+        case syncFailed
+
+        var errorDescription: String? {
+            switch self {
+            case .generationFailed(let msg): return msg
+            case .invalidResponse: return "Server returned invalid response"
+            case .syncFailed: return "Failed to sync with server"
+            }
+        }
+    }
     @MainActor
     func uploadInsight(insight: Insight, token: String) async throws {
         let remoteInsight = try await server.saveInsight(
@@ -71,5 +120,27 @@ final class InsightService {
 
     func deleteInsight(id: Int, token: String) async throws {
         _ = try await server.deleteInsight(id: id, token: token)
+    }
+}
+extension InsightService {
+    @MainActor
+    func retryFailedSyncs(modelContext: ModelContext, token: String) async {
+        let errorStatus = SyncStatus.error
+        let descriptor = FetchDescriptor<Insight>(
+            predicate: #Predicate { $0.syncStatus == errorStatus }
+        )
+
+        let errorInsights = try? modelContext.fetch(descriptor)
+
+        guard let errorInsights = errorInsights, !errorInsights.isEmpty else { return }
+
+        for insight in errorInsights {
+            do {
+                try await uploadInsight(insight: insight, token: token)
+                print("✅ Retry successful for insight \(insight.id)")
+            } catch {
+                print("❌ Retry failed for insight \(insight.id): \(error)")
+            }
+        }
     }
 }

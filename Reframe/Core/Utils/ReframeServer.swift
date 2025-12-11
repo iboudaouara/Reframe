@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 struct AppURL: Sendable{
     static let serverURL = "https://ibrahimboudaouara.com/reframe"
@@ -33,7 +33,16 @@ final class ReframeServer {
     
     private let serverURL = URL(string: AppURL.serverURL)!
     static let shared = ReframeServer()
-    
+
+    func handleAuthError(_ statusCode: Int) async {
+        if statusCode == 401 {
+            await MainActor.run {
+                KeychainManager.shared.deleteToken()
+                NotificationCenter.default.post(name: .userSessionExpired, object: nil)
+            }
+        }
+    }
+
     func generateInsight(from input: String) async throws -> InsightResponse {
         var request = URLRequest(url: serverURL)
         request.httpMethod = "POST"
@@ -44,11 +53,8 @@ final class ReframeServer {
         
         let (data, _) = try await URLSession.shared.data(for: request)
         
-        // ... (gestion du guard let httpResp) ...
-        
         print("SERVER RESPONSE RAW:", String(data: data, encoding: .utf8) ?? "nil")
         
-        // 🎯 CORRECTION: Effectuer le décodage de manière non-isolée (sur un acteur générique).
         let decodedResponse = try JSONDecoder().decode(InsightResponse.self, from: data)
         
         return decodedResponse
@@ -61,12 +67,11 @@ final class ReframeServer {
         method: String,
         headers: [String: String] = [:],
         body: (any Encodable)? = nil,
-        urlBase: String? = nil// 🆕 Nouveau paramètre par défaut (pour la rétrocompatibilité)
+        urlBase: String? = nil
     ) async throws -> T {
         
         let finalURLBase = urlBase ?? AppURL.authURL
         
-        // 3. Utiliser finalURLBase pour la construction de l'URL
         let fullPath = endpoint.isEmpty ? finalURLBase : "\(finalURLBase)/\(endpoint)"
         guard let url = URL(string: fullPath) else {
             throw URLError(.badURL)
@@ -90,7 +95,12 @@ final class ReframeServer {
         guard let httpResp = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }
-        
+
+        if httpResp.statusCode == 401 {
+            await handleAuthError(401)
+            throw ServerError.httpError(statusCode: 401, message: "Session expired. Please log in again.")
+        }
+
         if !(200...299).contains(httpResp.statusCode) {
             print("SERVER ERROR RAW:", String(data: data, encoding: .utf8) ?? "nil")
             
@@ -102,28 +112,15 @@ final class ReframeServer {
                 )
         }
         
-        // 💡 Assurez-vous que votre JSONDecoder est configuré pour décoder les dates PostgreSQL si nécessaire.
-        // Par exemple: JSONDecoder().dateDecodingStrategy = .iso8601
-        
         return try JSONDecoder().decode(T.self, from: data)
     }
     
-    // InsightModels.swift (ou dans ReframeServer.swift)
-    
-    // Le corps de la requête POST pour sauvegarder un insight
     struct SaveInsightRequest: Encodable {
         let userThought: String
         let generatedInsight: String
-        let openaiToken: String? // Optionnel
-        /*
-         enum CodingKeys: String, CodingKey {
-         case userThought
-         case generatedInsight
-         case openaiToken
-         }*/
+        let openaiToken: String?
     }
     
-    // La structure de la réponse du serveur pour un insight (pour GET et POST)
     struct RemoteInsight: Decodable {
         let id: Int
         let user_id: Int
@@ -132,8 +129,6 @@ final class ReframeServer {
         let created_at: Date
         
         var localInsight: Insight {
-            // Assurez-vous que le type Insight est accessible.
-            // Si non, vous pourriez avoir besoin d'importer SwiftData ou le module InsightController
             return Insight(
                 userThought: user_thought,
                 generatedInsight: generated_insight,
@@ -143,8 +138,6 @@ final class ReframeServer {
             )
         }
 
-        // Le champ 'openai_token' est omis s'il n'est pas nécessaire sur le client
-        
         enum CodingKeys: String, CodingKey {
             case id
             case user_id
@@ -162,8 +155,8 @@ final class ReframeServer {
     
 
     func saveInsight(thought: String, insight: String, token: String, openaiToken: String? = nil) async throws -> RemoteInsight {
-        let headers = ["Authorization": "Bearer \(token)"]
-        let finalOpenAIToken = openaiToken ?? "default-openai-token"
+        let _ = ["Authorization": "Bearer \(token)"]
+        let _ = openaiToken ?? "default-openai-token"
         // ✅ La structure utilise maintenant les bons noms de propriétés
         let body = SaveInsightRequest(
             userThought: thought,
@@ -171,11 +164,9 @@ final class ReframeServer {
             openaiToken: "openaiToken"
         )
 
-        // ✅ Configuration du décodeur pour gérer les dates ISO8601
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
 
-        // ✅ Appel avec décodage personnalisé
         let fullPath = AppURL.insightURL
         guard let url = URL(string: fullPath) else {
             throw URLError(.badURL)
@@ -217,7 +208,7 @@ final class ReframeServer {
     }
 
     func fetchUserInsights(token: String) async throws -> [RemoteInsight] {
-        let headers = ["Authorization": "Bearer \(token)"]
+        let _ = ["Authorization": "Bearer \(token)"]
 
         // ✅ Configuration du décodeur pour gérer les dates ISO8601
         let decoder = JSONDecoder()
