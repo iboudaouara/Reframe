@@ -2,22 +2,23 @@ import SwiftUI
 import SwiftData
 
 struct User: Decodable {
-    let id: String
-    let firstName: String
-    let lastName: String
+    let id: Int
+    let firstname: String
+    let lastname: String
     //let name: String
     let email: String
     let token: String
-
+    /*
     enum CodingKeys: String, CodingKey {
         case id
-        case firstName = "first_name"
-        case lastName = "last_name"
+        case firstname = "first_name"
+        case lastname = "last_name"
         case email
         case token
     }
+     */
     var fullName: String {
-        "\(firstName) \(lastName)"
+        "\(firstname) \(lastname)"
     }
 }
 
