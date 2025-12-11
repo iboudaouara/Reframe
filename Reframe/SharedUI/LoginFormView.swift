@@ -32,7 +32,7 @@ struct LoginFormView: View {
                 }
             }
 
-            CustomTextField(placeholder: "Email", text: $email, isSecure: false)
+            CustomTextField(placeholder: "Email", text: $email, isSecure: false, contentType: .emailAddress)
             CustomTextField(placeholder: "Password", text: $password, isSecure: true)
                 .focused($passwordFieldIsFocused)
 
@@ -50,4 +50,9 @@ struct LoginFormView: View {
         }
         .padding(.horizontal, 32)
     }
+}
+
+enum AuthMode {
+    case login
+    case signup
 }

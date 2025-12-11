@@ -16,13 +16,19 @@ struct ReframeApp: App {
 
 struct RootView: View {
     @Environment(UserSession.self) var session
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         Group {
             if session.isLoading {
                 LoadingView()
             } else if session.isLoggedIn {
-                MainTabView()
+                MainTabView().task(id: session.user?.id) {
+                    if session.isLoggedIn {
+                        await session.synchronizeIfLoggedIn(modelContext: modelContext)
+                    }
+                }
+
             } else {
                 AuthView()
             }
@@ -33,7 +39,7 @@ struct RootView: View {
 struct LoadingView: View {
     var body: some View {
         VStack {
-            ProgressView("Vérification de la session...")
+            ProgressView(LocalizedStringKey("Checking your session ..."))
                 .progressViewStyle(.circular)
                 .padding()
             Text("Reframe")

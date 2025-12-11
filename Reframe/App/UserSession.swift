@@ -3,23 +3,10 @@ import SwiftData
 
 struct User: Decodable {
     let id: Int
-    let firstname: String
-    let lastname: String
-    //let name: String
+    let firstname: String?
+    let lastname: String?
     let email: String
     let token: String
-    /*
-    enum CodingKeys: String, CodingKey {
-        case id
-        case firstname = "first_name"
-        case lastname = "last_name"
-        case email
-        case token
-    }
-     */
-    var fullName: String {
-        "\(firstname) \(lastname)"
-    }
 }
 
 @Observable final class UserSession {
@@ -28,6 +15,7 @@ struct User: Decodable {
     var isLoading = false
     var selectedAvatar: ProfileIcon = .avatar1
     var isPickerPresented: Bool = false
+
     private let authService = AuthService.shared
     private let insightService = InsightService.shared
 
@@ -40,9 +28,19 @@ struct User: Decodable {
     
     @MainActor
     func synchronizeIfLoggedIn(modelContext: ModelContext) async {
+
         guard isLoggedIn, let token = user?.token else {
+            print("⚠️ synchronizeIfLoggedIn: pas de user ou token")
+
             return
         }
+        print("🔄 synchronizeIfLoggedIn - user: \(user?.id ?? 0)")
+
+                // Optionnel : nettoyer les insights locaux avant sync (utile lors d'un changement d'utilisateur)
+
+                    print("🧹 Nettoyage des insights locaux...")
+                    clearLocalInsights(modelContext: modelContext)
+                
         try? await insightService.synchronize(modelContext: modelContext, token: token)
     }
 
@@ -140,4 +138,16 @@ struct User: Decodable {
 
         self.logout()
     }
+
+    @MainActor
+    private func clearLocalInsights(modelContext: ModelContext) {
+        do {
+            try modelContext.delete(model: Insight.self)
+            print("✅ Insights locaux supprimés")
+        } catch {
+            print("❌ Erreur lors de la suppression des insights locaux:", error)
+        }
+    }
 }
+
+// verify-token

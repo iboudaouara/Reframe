@@ -65,10 +65,7 @@ struct LoginView: View {
     }
 }
 
-enum AuthMode {
-    case login
-    case signup
-}
+
 
 
 #Preview {

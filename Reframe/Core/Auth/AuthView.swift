@@ -56,7 +56,7 @@ struct HomeBottomSheet: View {
                 PrimaryButton(title: "Login") { navigate(.login) }
                 SecondaryButton(title: "Sign Up") { navigate(.signup) }
             }
-            Separator(text: "or Login with")
+            Separator(text: "OR")
             AppleSignInButton()
         }.padding(40)
     }

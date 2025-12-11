@@ -1,8 +1,15 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Au moins 8 caractères" : {
-
+    "At least 8 characters" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Au moins 8 caractères"
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
@@ -10,6 +17,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Annuler"
+          }
+        }
+      }
+    },
+    "Checking your session ..." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérification de la session ..."
           }
         }
       }
@@ -75,7 +92,14 @@
       }
     },
     "Done" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminer"
+          }
+        }
+      }
     },
     "Email" : {
       "localizations" : {
@@ -91,7 +115,14 @@
 
     },
     "First Name" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prénom"
+          }
+        }
+      }
     },
     "Generate Insight" : {
       "localizations" : {
@@ -198,7 +229,14 @@
       }
     },
     "Last Name" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom de famille"
+          }
+        }
+      }
     },
     "Log and reflect on your daily thoughts." : {
       "localizations" : {
@@ -228,7 +266,14 @@
       }
     },
     "Login Failed" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authentification échouée"
+          }
+        }
+      }
     },
     "Logout" : {
       "localizations" : {
@@ -261,7 +306,65 @@
       }
     },
     "OK" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "One lowercase letter" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une lettre minuscule"
+          }
+        }
+      }
+    },
+    "One number" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un nombre"
+          }
+        }
+      }
+    },
+    "One special character (!@#$%^&*)" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un caractère spécial (!@#$%^&*)"
+          }
+        }
+      }
+    },
+    "One uppercase letter" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une lettre majuscule"
+          }
+        }
+      }
+    },
+    "OR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OU"
+          }
+        }
+      }
     },
     "or Login with" : {
       "extractionState" : "manual",
@@ -373,7 +476,14 @@
       }
     },
     "Sign Up Failed" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inscription échouée"
+          }
+        }
+      }
     },
     "Stay on track with gentle reminders." : {
       "localizations" : {
@@ -434,21 +544,6 @@
           }
         }
       }
-    },
-    "Un caractère spécial (!@#$%^&*)" : {
-
-    },
-    "Un chiffre" : {
-
-    },
-    "Une lettre majuscule" : {
-
-    },
-    "Une lettre minuscule" : {
-
-    },
-    "Vérification de la session..." : {
-
     },
     "Welcome!" : {
       "localizations" : {

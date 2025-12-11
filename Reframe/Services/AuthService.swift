@@ -33,7 +33,7 @@ final class AuthService : AuthServiceProtocol {
 
     func verifyTokenAndFetchUser(token: String) async throws -> User {
         let headers = ["Authorization": "Bearer \(token)"]
-        return try await server.request(endpoint: "verify-token", method: "GET", headers: headers)
+        return try await server.request(endpoint: "verify-token", method: "POST", headers: headers)
     }
 }
 

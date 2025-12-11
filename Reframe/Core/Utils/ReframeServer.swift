@@ -115,12 +115,12 @@ final class ReframeServer {
         let userThought: String
         let generatedInsight: String
         let openaiToken: String? // Optionnel
-        
-        enum CodingKeys: String, CodingKey {
-            case userThought
-            case generatedInsight
-            case openaiToken
-        }
+        /*
+         enum CodingKeys: String, CodingKey {
+         case userThought
+         case generatedInsight
+         case openaiToken
+         }*/
     }
     
     // La structure de la réponse du serveur pour un insight (pour GET et POST)
@@ -132,16 +132,16 @@ final class ReframeServer {
         let created_at: Date
         
         var localInsight: Insight {
-                    // Assurez-vous que le type Insight est accessible.
-                    // Si non, vous pourriez avoir besoin d'importer SwiftData ou le module InsightController
-                    return Insight(
-                        userThought: user_thought,
-                        generatedInsight: generated_insight,
-                        timestamp: created_at,
-                        serverId: id,
-                        syncStatus: .synced
-                    )
-                }
+            // Assurez-vous que le type Insight est accessible.
+            // Si non, vous pourriez avoir besoin d'importer SwiftData ou le module InsightController
+            return Insight(
+                userThought: user_thought,
+                generatedInsight: generated_insight,
+                timestamp: created_at,
+                serverId: id,
+                syncStatus: .synced
+            )
+        }
 
         // Le champ 'openai_token' est omis s'il n'est pas nécessaire sur le client
         
@@ -160,40 +160,96 @@ final class ReframeServer {
         let id: String // Ou Int, selon ce que le serveur retourne
     }
     
-    
-    // Fichier: ReframeServer.swift
-    
-    // ... (votre code existant) ...
-    
-    // Base URL pour les insights (à ajouter à AppURL si vous l'utilisez)
-    
-    // J'assume que la route sera /api/insights
-    
-    // Nouvelle fonction pour sauvegarder un insight
+
     func saveInsight(thought: String, insight: String, token: String, openaiToken: String? = nil) async throws -> RemoteInsight {
         let headers = ["Authorization": "Bearer \(token)"]
-        let body = SaveInsightRequest(userThought: thought, generatedInsight: insight, openaiToken: openaiToken)
-        
-        return try await request(
-            endpoint: "", // On laisse vide pour utiliser l'URL de base /api/insights
-            method: "POST",
-            headers: headers,
-            body: body,
-            urlBase: AppURL.insightURL // Surcharge de la base d'URL
+        let finalOpenAIToken = openaiToken ?? "default-openai-token"
+        // ✅ La structure utilise maintenant les bons noms de propriétés
+        let body = SaveInsightRequest(
+            userThought: thought,
+            generatedInsight: insight,
+            openaiToken: "openaiToken"
         )
+
+        // ✅ Configuration du décodeur pour gérer les dates ISO8601
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        // ✅ Appel avec décodage personnalisé
+        let fullPath = AppURL.insightURL
+        guard let url = URL(string: fullPath) else {
+            throw URLError(.badURL)
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        request.httpBody = try JSONEncoder().encode(body)
+
+        // Debug: Afficher la requête
+        if let bodyData = request.httpBody,
+           let bodyString = String(data: bodyData, encoding: .utf8) {
+            print("📤 REQUEST BODY:", bodyString)
+        }
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResp = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+
+        // Debug: Afficher la réponse
+        print("📥 RESPONSE STATUS:", httpResp.statusCode)
+        print("📥 RESPONSE BODY:", String(data: data, encoding: .utf8) ?? "nil")
+
+        if !(200...299).contains(httpResp.statusCode) {
+            let serverError = try? decoder.decode(ServerErrorResponse.self, from: data)
+            throw ServerError.httpError(
+                statusCode: httpResp.statusCode,
+                message: serverError?.error ?? "Une erreur est survenue sur le serveur."
+            )
+        }
+
+        return try decoder.decode(RemoteInsight.self, from: data)
     }
-    
+
     func fetchUserInsights(token: String) async throws -> [RemoteInsight] {
         let headers = ["Authorization": "Bearer \(token)"]
-        
-        return try await request(
-            endpoint: "", // On laisse vide pour utiliser l'URL de base /api/insights
-            method: "GET",
-            headers: headers,
-            urlBase: AppURL.insightURL // Surcharge de la base d'URL
-        )
+
+        // ✅ Configuration du décodeur pour gérer les dates ISO8601
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        let fullPath = AppURL.insightURL
+        guard let url = URL(string: fullPath) else {
+            throw URLError(.badURL)
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResp = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+
+        if !(200...299).contains(httpResp.statusCode) {
+            let serverError = try? decoder.decode(ServerErrorResponse.self, from: data)
+            throw ServerError.httpError(
+                statusCode: httpResp.statusCode,
+                message: serverError?.error ?? "Une erreur est survenue sur le serveur."
+            )
+        }
+
+        return try decoder.decode([RemoteInsight].self, from: data)
     }
-    
+
     // 🔄 CORRECTION : id est maintenant un Int et est inclus correctement dans l'endpoint
     func deleteInsight(id: Int, token: String) async throws -> DeleteInsightResponse {
         let headers = ["Authorization": "Bearer \(token)"]

@@ -8,7 +8,7 @@ struct PasswordCriteriaView: View {
             HStack {
                 Image(systemName: password.count >= 8 ? "checkmark.circle.fill" : "x.circle")
                     .foregroundColor(password.count >= 8 ? .green : .red)
-                Text("Au moins 8 caractères")
+                Text(LocalizedStringKey("At least 8 characters"))
             }
             HStack {
                 Image(
@@ -16,7 +16,7 @@ struct PasswordCriteriaView: View {
                         .range(of: "[A-Z]", options: .regularExpression) != nil ? "checkmark.circle.fill" : "x.circle"
                 )
                 .foregroundColor(password.range(of: "[A-Z]", options: .regularExpression) != nil ? .green : .red)
-                Text("Une lettre majuscule")
+                Text(LocalizedStringKey("One uppercase letter"))
             }
             HStack {
                 Image(
@@ -24,7 +24,7 @@ struct PasswordCriteriaView: View {
                         .range(of: "[a-z]", options: .regularExpression) != nil ? "checkmark.circle.fill" : "x.circle"
                 )
                 .foregroundColor(password.range(of: "[a-z]", options: .regularExpression) != nil ? .green : .red)
-                Text("Une lettre minuscule")
+                Text(LocalizedStringKey("One lowercase letter"))
             }
             HStack {
                 Image(
@@ -32,7 +32,7 @@ struct PasswordCriteriaView: View {
                         .range(of: "\\d", options: .regularExpression) != nil ? "checkmark.circle.fill" : "x.circle"
                 )
                 .foregroundColor(password.range(of: "\\d", options: .regularExpression) != nil ? .green : .red)
-                Text("Un chiffre")
+                Text(LocalizedStringKey("One number"))
             }
             HStack {
                 Image(
@@ -43,7 +43,7 @@ struct PasswordCriteriaView: View {
                         ) != nil ? "checkmark.circle.fill" : "x.circle"
                 )
                 .foregroundColor(password.range(of: "[!@#$%^&*]", options: .regularExpression) != nil ? .green : .red)
-                Text("Un caractère spécial (!@#$%^&*)")
+                Text(LocalizedStringKey("One special character (!@#$%^&*)"))
             }
         }
         .font(.footnote)
