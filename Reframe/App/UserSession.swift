@@ -1,12 +1,18 @@
 import SwiftUI
 import SwiftData
 
-struct User: Decodable {
+struct User: Codable {
     let id: Int
     let firstname: String?
     let lastname: String?
     let email: String
     let token: String
+
+    var fullName: String {
+        return [firstname, lastname]
+            .compactMap { $0 }
+            .joined(separator: " ")
+    }
 }
 
 @Observable final class UserSession {
@@ -27,7 +33,7 @@ struct User: Decodable {
     }
     
     @MainActor
-    func synchronizeIfLoggedIn(modelContext: ModelContext) async {
+    func synchronize(modelContext: ModelContext) async {
 
         guard isLoggedIn, let token = user?.token else {
             print("⚠️ synchronizeIfLoggedIn: pas de user ou token")
@@ -36,10 +42,10 @@ struct User: Decodable {
         }
         print("🔄 synchronizeIfLoggedIn - user: \(user?.id ?? 0)")
 
-                // Optionnel : nettoyer les insights locaux avant sync (utile lors d'un changement d'utilisateur)
+        // Optionnel : nettoyer les insights locaux avant sync (utile lors d'un changement d'utilisateur)
 
-                    print("🧹 Nettoyage des insights locaux...")
-                    clearLocalInsights(modelContext: modelContext)
+        print("🧹 Nettoyage des insights locaux...")
+        clearLocalInsights(modelContext: modelContext)
                 
         try? await insightService.synchronize(modelContext: modelContext, token: token)
     }
@@ -150,16 +156,16 @@ struct User: Decodable {
     }
 
     func observeSessionExpiration() {
-            NotificationCenter.default.addObserver(
-                forName: .userSessionExpired,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                Task(){
-                    await self?.logout()
-                }
+        NotificationCenter.default.addObserver(
+            forName: .userSessionExpired,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task(){
+                await self?.logout()
             }
         }
+    }
 }
 
 extension Notification.Name {

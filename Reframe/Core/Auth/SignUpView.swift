@@ -7,6 +7,8 @@ struct SignUpView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
 
+    @State private var termsAccepted: Bool = false
+
     @State private var firstName = ""
     @State private var lastName = ""
 
@@ -37,8 +39,10 @@ struct SignUpView: View {
                             mode: .signup,
                             onSubmit: handleSignUp
                         )
+
+                        AcceptTermsView(termsAccepted: $termsAccepted)
                         
-                        LegalFooterView()
+                        //LegalFooterView()
                         Spacer()
                     }.frame(minHeight: geo.size.height)
                 }.frame(minWidth: geo.size.width, minHeight: geo.size.height).background(.ultraThinMaterial)

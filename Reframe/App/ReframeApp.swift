@@ -3,35 +3,33 @@ import SwiftData
 
 @main
 struct ReframeApp: App {
-    @State private var session = UserSession()
+
+    @State private var userSession = UserSession()
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environment(session)
+                .environment(userSession)
                 .modelContainer(for: Insight.self)
         }
     }
 }
 
 struct RootView: View {
-    @Environment(UserSession.self) var session
+    @Environment(UserSession.self) private var userSession
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         Group {
-            if session.isLoading {
+            if userSession.isLoading {
                 LoadingView()
-            } else if session.isLoggedIn {
-                MainTabView().task(id: session.user?.id) {
-                    if session.isLoggedIn {
-                        await session.synchronizeIfLoggedIn(modelContext: modelContext)
-                    }
-                }
-
+            } else if userSession.isLoggedIn {
+                MainTabView()
             } else {
                 AuthView()
             }
+        }.task(id: userSession.user?.id) {
+            await userSession.synchronize(modelContext: modelContext)
         }
     }
 }
@@ -39,7 +37,7 @@ struct RootView: View {
 struct LoadingView: View {
     var body: some View {
         VStack {
-            ProgressView(LocalizedStringKey("Checking your session ..."))
+            ProgressView(LocalizedStringKey("Checking your session..."))
                 .progressViewStyle(.circular)
                 .padding()
             Text("Reframe")

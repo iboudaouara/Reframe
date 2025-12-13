@@ -25,7 +25,7 @@ struct ProfileView: View {
                         .shadow(radius: 2)
                 }
                 
-                //Text("Hello, \(session.userName)")
+                Text("Hello, \(session.user?.fullName ?? "User")")
                 //  .font(.largeTitle.bold())
                 
                 Button(action: { session.logout() }) {

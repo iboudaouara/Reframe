@@ -5,6 +5,10 @@ struct InsightView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State private var userInput: String = ""
+    // NOUVELLES VARIABLES D'ÉTAT LOCALES
+        @State private var isLoading: Bool = false
+        @State private var generatedInsight: String?
+        @State private var errorMessage: String?
     //@State private var controller = InsightController()
     @State private var showSaveConfirmation = false
     private let insightService = InsightService.shared
@@ -42,12 +46,8 @@ struct InsightView: View {
                         .shadow(radius: 3)
                         .padding(.horizontal, 32)
 
-                    Button(action: {
-                        Task(){do{try await insightService.generateInsight(from: userInput)}catch{print(error)
-                        }}
-
-                    }) {
-                        if insightService.isLoading {
+                    Button(action: handleGenerateInsight) {
+                        if isLoading {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                 .frame(maxWidth: .infinity)
@@ -67,7 +67,7 @@ struct InsightView: View {
                         }
                     }
 
-                    if let insight = insightService.generatedInsight {
+                    if let insight = generatedInsight {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Text("Insight:")
@@ -97,7 +97,7 @@ struct InsightView: View {
                         .transition(.opacity.combined(with: .slide))
                     }
 
-                    if let error = insightService.errorMessage {
+                    if let error = errorMessage {
                         Text("Erreur: \(error)")
                             .foregroundColor(.red)
                             .padding(.horizontal, 32)
@@ -108,39 +108,55 @@ struct InsightView: View {
             }
         }
     }
-    // Fichier: InsightView.swift
 
-    // Fichier: Reframe/Core/Main/InsightView.swift (dans la struct InsightView)
+    private func handleGenerateInsight() {
+            generatedInsight = nil
+            errorMessage = nil
 
-    // ... (Ajouter la dépendance)
-    // ...
+            Task { @MainActor in
+                isLoading = true
+
+                defer {
+                    isLoading = false
+                }
+
+                do {
+                    let response = try await insightService.generateInsight(from: userInput)
+
+                    if let reply = response.reply {
+                        self.generatedInsight = reply
+                    } else if let error = response.error {
+                        self.errorMessage = error
+                    } else {
+                        self.errorMessage = "Server returned an invalid response."
+                    }
+                } catch {
+                    self.errorMessage = error.localizedDescription
+                }
+            }
+        }
 
         private func saveInsight() {
-            guard let insightText = insightService.generatedInsight,
+            guard let insightText = generatedInsight,
                   !userInput.isEmpty,
                   let token = session.user?.token
                   else {
-                insightService.errorMessage = "You must be logged in to save insights."
+                errorMessage = "You must be logged in to save insights."
                 return
             }
 
-            // 1. Création de l'insight local avec statut .pending
             let newInsight = Insight(
                 userThought: userInput,
                 generatedInsight: insightText,
                 syncStatus: .pending
             )
             modelContext.insert(newInsight)
-            // Sauvegarde locale initiale
             try? modelContext.save()
 
-            // 2. Tentative de synchronisation immédiate
             Task {
                 do {
-                    // L'appel au service met à jour l'insight local (serverId et syncStatus = .synced)
                     try await InsightService.shared.uploadInsight(insight: newInsight, token: token)
 
-                    // ... (Afficher confirmation et réinitialiser le champ) ...
                     withAnimation {
                         showSaveConfirmation = true
                     }
@@ -149,23 +165,22 @@ struct InsightView: View {
                         withAnimation {
                             showSaveConfirmation = false
                             userInput = ""
-                            insightService.generatedInsight = nil
+                            generatedInsight = nil
                         }
                     }
                     print("✅ Insight saved and synced.")
 
                 } catch {
-                    // 3. Gérer l'échec de la synchronisation serveur
                     newInsight.syncStatus = .error
-                    try? modelContext.save() // Sauvegarder le statut d'erreur
+                    try? modelContext.save()
 
                     print("❌ Erreur de synchronisation serveur:", error)
-                    insightService.errorMessage = "Insight saved locally, but failed to sync: \(error.localizedDescription)"
+                    errorMessage = "Insight saved locally, but failed to sync: \(error.localizedDescription)"
                 }
             }
         }
-    // ...
-}
+    }
+
 
 
 #Preview {

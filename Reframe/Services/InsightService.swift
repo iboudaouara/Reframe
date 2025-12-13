@@ -10,39 +10,20 @@ final class InsightService {
     var errorMessage: String?
     
     @MainActor
-    func generateInsight(from thought: String) async throws -> String {
-        guard !thought.isEmpty else { return ""}
-
-        isLoading = true
-        //errorMessage = nil
-
-        Task {
-            do {
-                do {
-                    let response = try await server.generateInsight(from: thought)
-                    if let reply = response.reply {
-                        self.generatedInsight = reply
-
-                    } else if let error = response.error {
-                        self.errorMessage = error
-                    } else {
-                        self.errorMessage = "Server returned an invalid response."
-                    }
-                }
-            }
+    func generateInsight(from thought: String) async throws -> InsightResponse {
+        guard !thought.isEmpty else {
+            throw InsightError.generationFailed("Thought cannot be empty.")
         }
+
         let response: InsightResponse = try await server.generateInsight(from: thought)
-/*
-        if let reply = response.reply {
-            self.generatedInsight = reply
-            return reply
-        } else if let error = response.error {
-            throw InsightError.generationFailed(error)
-        } else {
+
+        if response.reply == nil && response.error == nil {
             throw InsightError.invalidResponse
-        }*/
-        return "";
+        }
+
+        return response
     }
+
     enum InsightError: LocalizedError {
         case generationFailed(String)
         case invalidResponse
