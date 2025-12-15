@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+
 /*
 @Observable @MainActor
 final class InsightController {
@@ -36,6 +37,7 @@ final class InsightController {
     }
 }
 */
+
 enum SyncStatus: String, Codable {
     case pending
     case synced

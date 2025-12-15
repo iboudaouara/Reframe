@@ -17,8 +17,10 @@ struct User: Codable {
 
 @Observable final class UserSession {
     var user: User?
+
     var isLoggedIn = false
     var isLoading = false
+
     var selectedAvatar: ProfileIcon = .avatar1
     var isPickerPresented: Bool = false
 
@@ -171,5 +173,3 @@ struct User: Codable {
 extension Notification.Name {
     static let userSessionExpired = Notification.Name("userSessionExpired")
 }
-
-// verify-token
