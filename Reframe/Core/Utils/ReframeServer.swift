@@ -21,10 +21,10 @@ struct ServerErrorResponse: Decodable {
 enum ServerError: Error, LocalizedError {
     case httpError(statusCode: Int, message: String)
     
-    var errorDescription: String? {
+    var errorDescription: LocalizedStringKey? {
         switch self {
         case .httpError(let statusCode, let message):
-            return "Erreur HTTP \(statusCode): \(message)"
+            return "HTTP Error \(statusCode): \(message)"
         }
     }
 }

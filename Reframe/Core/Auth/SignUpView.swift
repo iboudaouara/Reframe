@@ -73,6 +73,11 @@ struct SignUpView: View {
             return
         }
 
+        if !termsAccepted {
+            errorMessage = "You must agree to the Terms of Service and Privacy Policy."
+            return
+        }
+
         Task {
             isLoading = true
             do {

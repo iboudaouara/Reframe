@@ -106,7 +106,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terminer"
+            "value" : "Terminé"
           }
         }
       }
@@ -121,8 +121,15 @@
         }
       }
     },
-    "Erreur: %@" : {
-
+    "Error: %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erreur: %@"
+          }
+        }
+      }
     },
     "First Name" : {
       "localizations" : {
@@ -165,7 +172,14 @@
       }
     },
     "Hello, %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonjour, %@"
+          }
+        }
+      }
     },
     "History" : {
       "localizations" : {
@@ -207,6 +221,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gardez vos pensées en ordre"
+          }
+        }
+      }
+    },
+    "HTTP Error %lld: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "HTTP Error %1$lld: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erreur HTTP %1$lld: %2$@ "
           }
         }
       }
@@ -385,17 +415,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OU"
-          }
-        }
-      }
-    },
-    "or Login with" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ou via"
           }
         }
       }

@@ -98,7 +98,7 @@ struct InsightView: View {
                     }
 
                     if let error = errorMessage {
-                        Text("Erreur: \(error)")
+                        Text("Error: \(error)")
                             .foregroundColor(.red)
                             .padding(.horizontal, 32)
                     }
