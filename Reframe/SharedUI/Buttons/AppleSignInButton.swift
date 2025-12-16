@@ -16,9 +16,18 @@ struct AppleSignInButton: View {
                     let userId = credential.user
                     let email = credential.email
                     let fullName = credential.fullName?.givenName
+
+                    let firstName = credential.fullName?.givenName
+                    let lastName = credential.fullName?.familyName
+
                     Task {
-                        // userSession.loginWithApple est @MainActor, donc l'appel est sûr.
-                        try await userSession.loginWithApple(userIdentifier: userId, email: email, fullName: fullName)
+                        try await userSession
+                            .loginWithApple(
+                                userIdentifier: userId,
+                                email: email,
+                                firstName: firstName,
+                                lastName: lastName
+                            )
                     }                }
             case .failure(let error):
                 print("Apple login failed: \(error)")

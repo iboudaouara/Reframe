@@ -22,9 +22,10 @@ final class AuthService : AuthServiceProtocol {
         KeychainManager.shared.deleteToken()
     }
 
+    /*
     func loginWithApple(userIdentifier: String, email: String?, fullName: String?) async throws -> User {
         try await server.request(endpoint: "apple-login", method: "POST", body: ["apple_id": userIdentifier])
-    }
+    }*/
 
     func deleteAccount(token: String) async throws -> DeleteAccountResponse {
         try await server
@@ -46,6 +47,29 @@ protocol AuthServiceProtocol {
     func signup(firstName: String, lastName: String, email: String, password: String) async throws -> User
     func logout()
     func deleteAccount(token: String) async throws -> DeleteAccountResponse
-    func loginWithApple(userIdentifier: String, email: String?, fullName: String?) async throws -> User
+    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws -> User
     func verifyTokenAndFetchUser(token: String) async throws -> User
+}
+
+struct AppleLoginRequest: Encodable {
+    let email: String?
+    let first_name: String?
+    let last_name: String?
+}
+
+extension AuthService {
+
+    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws -> User {
+            let requestBody = AppleLoginRequest(
+                email: email,
+                first_name: firstName,
+                last_name: lastName
+            )
+
+            return try await server.request(
+                endpoint: "apple-login",
+                method: "POST",
+                body: requestBody
+            )
+        }
 }

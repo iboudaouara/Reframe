@@ -52,6 +52,8 @@ struct KeychainKeys {
 final class KeychainManager {
     static let shared = KeychainManager()
 
+    private static let appleEmailService = "com.reframe.appleEmailCache"
+
     private init() {}
 
     func saveToken(_ token: String) {
@@ -65,4 +67,30 @@ final class KeychainManager {
     func deleteToken() {
         KeychainItem.deleteUserIdentifier()
     }
+
+    func saveEmailForAppleID(_ email: String, for userId: String) {
+            let query: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: KeychainManager.appleEmailService,
+                kSecAttrAccount as String: userId,
+                kSecValueData as String: email.data(using: .utf8)!
+            ]
+            SecItemDelete(query as CFDictionary)
+            SecItemAdd(query as CFDictionary, nil)
+        }
+    func getEmailForAppleID(_ userId: String) -> String? {
+            let query: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: KeychainManager.appleEmailService,
+                kSecAttrAccount as String: userId,
+                kSecReturnData as String: true,
+                kSecMatchLimit as String: kSecMatchLimitOne
+            ]
+            var dataTypeRef: AnyObject?
+            let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+            if status == errSecSuccess, let data = dataTypeRef as? Data {
+                return String(data: data, encoding: .utf8)
+            }
+            return nil
+        }
 }

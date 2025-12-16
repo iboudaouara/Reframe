@@ -88,13 +88,17 @@ struct User: Codable {
     }
 
     @MainActor
-    func loginWithApple(userIdentifier: String, email: String?, fullName: String?) async throws {
+    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws {
         let user = try await AuthService.shared.loginWithApple(
             userIdentifier: userIdentifier,
             email: email,
-            fullName: fullName
+            firstName: firstName,
+            lastName: lastName
         )
         completeAuthentication(for: user)
+        if let receivedEmail = email {
+                KeychainManager.shared.saveEmailForAppleID(receivedEmail, for: userIdentifier)
+            }
     }
 
     @MainActor

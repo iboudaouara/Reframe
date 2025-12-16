@@ -38,8 +38,12 @@ extension SignInWithAppleController: ASAuthorizationControllerDelegate, ASAuthor
         let name = appleID.fullName?.givenName ?? "Apple User"
         let email = appleID.email
 
+        let firstName = appleID.fullName?.givenName
+        let lastName = appleID.fullName?.familyName
+
         Task {
-            try await session.loginWithApple(userIdentifier: userID, email: email ?? "", fullName: name)
+            try await session
+                .loginWithApple(userIdentifier: userID, email: email, firstName: firstName, lastName: lastName)
         }
     }
 
