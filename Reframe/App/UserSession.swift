@@ -20,6 +20,7 @@ struct User: Codable {
 
     var isLoggedIn = false
     var isLoading = false
+    var isGuest = false
 
     var selectedAvatar: ProfileIcon = .avatar1
     var isPickerPresented: Bool = false
@@ -31,6 +32,7 @@ struct User: Codable {
     private func completeAuthentication(for user: User) {
         self.user = user
         self.isLoggedIn = true
+        self.isGuest = false
         KeychainManager.shared.saveToken(user.token)
     }
     
@@ -75,6 +77,13 @@ struct User: Codable {
     }
 
     @MainActor
+        func continueAsGuest() {
+            self.isGuest = true
+            self.isLoggedIn = false
+            self.user = nil
+        }
+
+    @MainActor
     func login(email: String, password: String) async throws {
         let user = try await AuthService.shared.login(email: email, password: password)
         completeAuthentication(for: user)
@@ -114,6 +123,7 @@ struct User: Codable {
         AuthService.shared.logout()
         self.user = nil
         self.isLoggedIn = false
+        self.isGuest = false
     }
 
     @MainActor

@@ -11,59 +11,72 @@ struct ProfileView: View {
         ScrollView {
             VStack(alignment: .center, spacing: 24) {
                 Spacer(minLength: 20)
-                
-                Button {
-                    session.triggerEditAvatar()
-                } label: {
-                    Image(systemName: session.selectedAvatar.rawValue)
+
+                if session.isGuest {
+                    Image(systemName: "person.circle")
                         .resizable()
-                        .scaledToFit() // force aspect ratio
-                        .frame(width: 120, height: 120)
-                        .foregroundColor(session.selectedAvatar.foregroundColor)
-                        .background(session.selectedAvatar.backgroundColor)
-                        .clipShape(Circle()) // uniform shape
-                        .shadow(radius: 2)
-                }
-                
-                Text("Hello, \(session.user?.fullName ?? "User")")
-                //  .font(.largeTitle.bold())
-                
-                Button(action: { session.logout() }) {
-                    Text("Logout")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .foregroundColor(.primary)
-                        .cornerRadius(12)
-                }
-                
-                Button(role: .destructive) {
-                    showingDeleteAlert = true
-                } label: {
-                    Text("Delete Account")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.red.opacity(0.2))
-                        .foregroundColor(.red)
-                        .cornerRadius(12)
-                }
-                .alert("Delete Account?", isPresented: $showingDeleteAlert) {
-                    Button("Delete", role: .destructive) {
-                        Task {
-                            do {
-                                try await session.deleteAccount(modelContext: modelContext)
-                                // The user is now logged out and their data is cleared.
-                            } catch {
-                                // Optionally, show an alert to the user that deletion failed.
-                                print("❌ Failed to delete account:", error)
-                            }
-                        }
+                        .frame(width: 100, height: 100)
+                        .foregroundStyle(.gray.opacity(0.5))
+
+                    Text("Guest Mode")
+                        .font(.title2.bold())
+
+                    Text("Create an account to save your history and access all features.")
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .foregroundStyle(.secondary)
+
+                    Button {
+                        session.logout() // This sends them back to AuthView
+                    } label: {
+                        Text("Sign Up / Login")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
                     }
-                    
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("This action is permanent and will remove all data, including your insights.")
+                    .padding(.horizontal, 32)
+
+                } else {
+
+                    Button {
+                        session.triggerEditAvatar()
+                    } label: {
+                        Image(systemName: session.selectedAvatar.rawValue)
+                            .resizable()
+                            .scaledToFit() // force aspect ratio
+                            .frame(width: 120, height: 120)
+                            .foregroundColor(session.selectedAvatar.foregroundColor)
+                            .background(session.selectedAvatar.backgroundColor)
+                            .clipShape(Circle()) // uniform shape
+                            .shadow(radius: 2)
+                    }
+
+                    Text("Hello, \(session.user?.fullName ?? "User")")
+                    //  .font(.largeTitle.bold())
+
+                    Button(action: { session.logout() }) {
+                        Text("Logout")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.gray.opacity(0.2))
+                            .foregroundColor(.primary)
+                            .cornerRadius(12)
+                    }
+
+                    Button(role: .destructive) {
+                        showingDeleteAlert = true
+                    } label: {
+                        Text("Delete Account")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.red.opacity(0.2))
+                            .foregroundColor(.red)
+                            .cornerRadius(12)
+                    }
                 }
+
                 
                 Spacer()
             }
@@ -72,6 +85,24 @@ struct ProfileView: View {
         .sheet(isPresented: $session.isPickerPresented) {
             IconPickerGridView(selectedIcon: $session.selectedAvatar)
                 .frame(maxWidth: .infinity)
+        }
+        .alert("Delete Account?", isPresented: $showingDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    do {
+                        try await session.deleteAccount(modelContext: modelContext)
+                        // The user is now logged out and their data is cleared.
+                    } catch {
+                        // Optionally, show an alert to the user that deletion failed.
+                        print("❌ Failed to delete account:", error)
+                    }
+                }
+            }
+
+
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This action is permanent and will remove all data, including your insights.")
         }
     }
 }

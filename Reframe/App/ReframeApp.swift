@@ -23,7 +23,7 @@ struct RootView: View {
         Group {
             if userSession.isLoading {
                 LoadingView()
-            } else if userSession.isLoggedIn {
+            } else if userSession.isLoggedIn || userSession.isGuest {
                 MainTabView()
             } else {
                 AuthView()

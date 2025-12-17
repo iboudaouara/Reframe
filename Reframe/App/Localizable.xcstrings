@@ -61,6 +61,26 @@
         }
       }
     },
+    "Continue as Guest" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuer comme invité"
+          }
+        }
+      }
+    },
+    "Create an account to save your history and access all features." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créer un compte pour sauvegarder votre historique et accéder à toutes les fonctionnalités."
+          }
+        }
+      }
+    },
     "Daily Reminders" : {
       "localizations" : {
         "fr" : {
@@ -167,6 +187,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recevoir des rétroactions"
+          }
+        }
+      }
+    },
+    "Guest Mode" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode Invité"
           }
         }
       }
@@ -513,6 +543,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "S’inscrire"
+          }
+        }
+      }
+    },
+    "Sign Up / Login" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S’inscrire / Se connecter"
           }
         }
       }
