@@ -89,16 +89,24 @@ struct User: Codable {
 
     @MainActor
     func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws {
+
+        let cachedEmail = KeychainManager.shared.getEmailForAppleID(userIdentifier)
+        let finalEmail = email ?? cachedEmail
+
+        guard let definitiveEmail = finalEmail else {
+            throw SessionError.missingToken
+        }
+
         let user = try await AuthService.shared.loginWithApple(
             userIdentifier: userIdentifier,
-            email: email,
+            email: definitiveEmail,
             firstName: firstName,
             lastName: lastName
         )
+
         completeAuthentication(for: user)
-        if let receivedEmail = email {
-                KeychainManager.shared.saveEmailForAppleID(receivedEmail, for: userIdentifier)
-            }
+
+        KeychainManager.shared.saveEmailForAppleID(definitiveEmail, for: userIdentifier)
     }
 
     @MainActor
