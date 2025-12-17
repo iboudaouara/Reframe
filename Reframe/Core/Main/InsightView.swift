@@ -128,7 +128,7 @@ struct InsightView: View {
                     } else if let error = response.error {
                         self.errorMessage = error
                     } else {
-                        self.errorMessage = "Server returned an invalid response."
+                        self.errorMessage = String(localized: "Server returned an invalid response.")
                     }
                 } catch {
                     self.errorMessage = error.localizedDescription
@@ -141,7 +141,7 @@ struct InsightView: View {
                   !userInput.isEmpty,
                   let token = session.user?.token
                   else {
-                errorMessage = "You must be logged in to save insights."
+                errorMessage = String(localized: "You must be logged in to save insights.")
                 return
             }
 
@@ -175,7 +175,7 @@ struct InsightView: View {
                     try? modelContext.save()
 
                     print("❌ Erreur de synchronisation serveur:", error)
-                    errorMessage = "Insight saved locally, but failed to sync: \(error.localizedDescription)"
+                    errorMessage = String(localized: "Insight saved locally, but failed to sync: \(error.localizedDescription)")
                 }
             }
         }

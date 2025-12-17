@@ -77,7 +77,9 @@ struct User: Codable {
     }
 
     @MainActor
-        func continueAsGuest() {
+        func continueAsGuest(modelContext: ModelContext) {
+            clearLocalInsights(modelContext: modelContext)
+
             self.isGuest = true
             self.isLoggedIn = false
             self.user = nil

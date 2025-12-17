@@ -301,6 +301,16 @@
         }
       }
     },
+    "Insight saved locally, but failed to sync: %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rétroaction sauvegardée localement, mais la synchronisation a échoué : %@"
+          }
+        }
+      }
+    },
     "Insight:" : {
       "localizations" : {
         "fr" : {
@@ -530,6 +540,16 @@
         }
       }
     },
+    "Server returned an invalid response." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le serveur a renvoyé une réponse invalide."
+          }
+        }
+      }
+    },
     "Sign Up" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -633,6 +653,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bienvenue!"
+          }
+        }
+      }
+    },
+    "You must be logged in to save insights." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous devez être connecté pour sauvegarder vos rétroactions."
           }
         }
       }

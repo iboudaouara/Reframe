@@ -50,7 +50,8 @@ struct AuthView: View {
 struct HomeBottomSheet: View {
     var navigate: (HomeDestination) -> Void
     @Environment(UserSession.self) var session
-    
+    @Environment(\.modelContext) var modelContext
+
     var body: some View {
         VStack {
             HStack {
@@ -60,7 +61,7 @@ struct HomeBottomSheet: View {
             Separator(text: "OR")
             AppleSignInButton()
             Button(action: {
-                session.continueAsGuest()
+                session.continueAsGuest(modelContext: modelContext)
             }) {
                 Text("Continue as Guest")
                     .font(.system(size: 19, weight: .medium))
