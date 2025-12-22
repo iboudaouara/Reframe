@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @Environment(UserSession.self) var session
+    @Environment(Session.self) var session
     @State private var email = ""
     @State private var password = ""
     @State private var isLoading = false
@@ -94,7 +94,7 @@ struct SignUpView: View {
 }
 
 #Preview {
-    let session = UserSession()
+    let session = Session()
     SignUpView()
         .environment(session)
 }

@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct ProfileView: View {
-    @Environment(UserSession.self) var session: UserSession
+    @Environment(Session.self) private var session
     @Environment(\.modelContext) private var modelContext
     @State private var showingDeleteAlert = false
     
@@ -52,6 +52,9 @@ struct ProfileView: View {
                             .clipShape(Circle()) // uniform shape
                             .shadow(radius: 2)
                     }
+                    //let nickname: String? = nil
+                    //let fullName: String = "John Appleseed"
+                    //let informalGreeting = "Hi \(nickname ?? fullName)"
 
                     Text("Hello, \(session.user?.fullName ?? "User")")
                     //  .font(.largeTitle.bold())

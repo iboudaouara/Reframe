@@ -49,7 +49,7 @@ struct AuthView: View {
 
 struct HomeBottomSheet: View {
     var navigate: (HomeDestination) -> Void
-    @Environment(UserSession.self) var session
+    @Environment(Session.self) var session
     @Environment(\.modelContext) var modelContext
 
     var body: some View {

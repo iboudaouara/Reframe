@@ -4,9 +4,9 @@ import SwiftUI
 import Combine
 
 class SignInWithAppleController: NSObject, ObservableObject {
-    private let session: UserSession
+    private let session: Session
 
-    init(session: UserSession) {
+    init(session: Session) {
         self.session = session
     }
 
@@ -35,15 +35,14 @@ extension SignInWithAppleController: ASAuthorizationControllerDelegate, ASAuthor
         guard let appleID = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
 
         let userID = appleID.user
-        let name = appleID.fullName?.givenName ?? "Apple User"
+        let _ = appleID.fullName?.givenName ?? "Apple User"
         let email = appleID.email
 
         let firstName = appleID.fullName?.givenName
         let lastName = appleID.fullName?.familyName
 
         Task {
-            try await session
-                .loginWithApple(userIdentifier: userID, email: email, firstName: firstName, lastName: lastName)
+            try await session.loginWithApple(userIdentifier: userID, email: email, firstName: firstName, lastName: lastName)
         }
     }
 

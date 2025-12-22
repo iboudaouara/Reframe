@@ -4,7 +4,7 @@ import AuthenticationServices
 
 struct AppleSignInButton: View {
     
-    @Environment(UserSession.self) var userSession
+    @Environment(Session.self) var userSession
     
     var body: some View {
         SignInWithAppleButton { request in
@@ -15,7 +15,7 @@ struct AppleSignInButton: View {
                 if let credential = authResults.credential as? ASAuthorizationAppleIDCredential {
                     let userId = credential.user
                     let email = credential.email
-                    let fullName = credential.fullName?.givenName
+                    let _ = credential.fullName?.givenName
 
                     let firstName = credential.fullName?.givenName
                     let lastName = credential.fullName?.familyName

@@ -5,7 +5,7 @@ struct HistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Insight.timestamp, order: .reverse) private var insights: [Insight]
     @State private var selectedInsight: Insight?
-    @Environment(UserSession.self) var session: UserSession
+    @Environment(Session.self) var session
     
     var body: some View {
 
