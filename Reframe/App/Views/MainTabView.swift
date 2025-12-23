@@ -18,6 +18,10 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Profile", systemImage: "person")
                 }
+            StrategicDashboardView()
+                .tabItem {
+                    Label("New", systemImage: "person")
+                }
         }
         .task(id: session.user?.id) {
             guard session.user != nil else { return }

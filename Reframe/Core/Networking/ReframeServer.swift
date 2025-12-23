@@ -7,6 +7,7 @@ struct AppURL: Sendable{
     static let termsOfUse = "\(serverURL)/terms-of-use"
     static let authURL = "\(serverURL)/api/auth"
     static let insightURL = "\(serverURL)/api/insights"
+    static let tacticalURL = "\(serverURL)/api/tactical"
 }
 
 struct InsightResponse: Decodable {
@@ -91,6 +92,10 @@ final class ReframeServer {
         }
         
         let (data, response) = try await URLSession.shared.data(for: request)
+
+        if let httpResponse = response as? HTTPURLResponse {
+            print("📢 [SERVER] Status Code reçu : \(httpResponse.statusCode)") // <--- C'est lui qui te dira si c'est 404 ou 500
+        }
         
         guard let httpResp = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)

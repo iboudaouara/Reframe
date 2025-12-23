@@ -1,6 +1,18 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld utilisations" : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "%lld%% succès" : {
+
+    },
+    "Analyse de rapports de force" : {
+
+    },
     "and" : {
       "localizations" : {
         "fr" : {
@@ -71,6 +83,9 @@
         }
       }
     },
+    "CONTRE-MESURES RECOMMANDÉES" : {
+
+    },
     "Create an account to save your history and access all features." : {
       "localizations" : {
         "fr" : {
@@ -90,6 +105,9 @@
           }
         }
       }
+    },
+    "DÉCODER LA SITUATION" : {
+
     },
     "Delete" : {
       "localizations" : {
@@ -121,6 +139,9 @@
         }
       }
     },
+    "DOMINATION ADVERSE:" : {
+
+    },
     "Done" : {
       "localizations" : {
         "fr" : {
@@ -140,6 +161,9 @@
           }
         }
       }
+    },
+    "Erreur Serveur" : {
+
     },
     "Error: %@" : {
       "localizations" : {
@@ -378,6 +402,9 @@
         }
       }
     },
+    "MANOEUVRE DÉTECTÉE" : {
+
+    },
     "My Insights" : {
       "localizations" : {
         "fr" : {
@@ -388,6 +415,9 @@
         }
       }
     },
+    "New" : {
+
+    },
     "No insights yet" : {
       "localizations" : {
         "fr" : {
@@ -397,6 +427,9 @@
           }
         }
       }
+    },
+    "Nouvelle Analyse" : {
+
     },
     "OK" : {
       "localizations" : {
@@ -489,6 +522,12 @@
           }
         }
       }
+    },
+    "Quelle interaction vous a destabilisé ?" : {
+
+    },
+    "RADAR SOCIAL" : {
+
     },
     "Receive personalized insights to improve mindset." : {
       "localizations" : {
