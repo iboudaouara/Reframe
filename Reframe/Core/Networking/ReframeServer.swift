@@ -62,7 +62,7 @@ final class ReframeServer {
     }
     
     private let baseURL = AppURL.authURL
-    
+    /*
     func request<T: Decodable>(
         endpoint: String,
         method: String,
@@ -118,8 +118,77 @@ final class ReframeServer {
         }
         
         return try JSONDecoder().decode(T.self, from: data)
-    }
-    
+    }*/
+    func request<T: Decodable>(
+            endpoint: String,
+            method: String,
+            headers: [String: String] = [:],
+            body: (any Encodable)? = nil,
+            urlBase: String? = nil
+        ) async throws -> T {
+
+            let finalURLBase = urlBase ?? AppURL.authURL
+
+            let fullPath = endpoint.isEmpty ? finalURLBase : "\(finalURLBase)/\(endpoint)"
+            guard let url = URL(string: fullPath) else {
+                throw URLError(.badURL)
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = method
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+
+            // 1. D'abord on ajoute les headers spécifiques passés en paramètre
+            headers.forEach { key, value in
+                request.addValue(value, forHTTPHeaderField: key)
+            }
+
+            // 👇 AJOUT CRITIQUE (ARCHITECTURE OPEN/CLOSED) 👇
+            // Si aucun header "Authorization" n'a été fourni manuellement,
+            // on demande au KeychainManager si un token est disponible.
+            if request.value(forHTTPHeaderField: "Authorization") == nil {
+                if let token = KeychainManager.shared.getToken() {
+                    request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+                    // print("🔑 [ReframeServer] Token injecté automatiquement depuis le Keychain")
+                }
+            }
+            // 👆 FIN DE L'AJOUT 👆
+
+            if let body = body {
+                request.httpBody = try JSONEncoder().encode(body)
+            }
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            // ... Le reste de ta fonction reste identique ...
+            if let httpResponse = response as? HTTPURLResponse {
+                 // print("📢 [SERVER] Status Code reçu : \(httpResponse.statusCode)")
+            }
+
+            guard let httpResp = response as? HTTPURLResponse else {
+                throw URLError(.badServerResponse)
+            }
+
+            if httpResp.statusCode == 401 {
+                await handleAuthError(401)
+                throw ServerError.httpError(statusCode: 401, message: "Session expired. Please log in again.")
+            }
+
+            if !(200...299).contains(httpResp.statusCode) {
+                // print("SERVER ERROR RAW:", String(data: data, encoding: .utf8) ?? "nil")
+
+                let serverError = try? JSONDecoder().decode(ServerErrorResponse.self, from: data)
+                throw ServerError
+                    .httpError(
+                        statusCode: httpResp.statusCode,
+                        message: serverError?.error ?? "Une erreur est survenue sur le serveur."
+                    )
+            }
+
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+
     struct SaveInsightRequest: Encodable {
         let userThought: String
         let generatedInsight: String
