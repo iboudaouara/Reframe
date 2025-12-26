@@ -4,6 +4,7 @@ import Foundation
 @Model
 final class TacticalSession {
     @Attribute(.unique) var id: UUID = UUID()
+    var serverId: Int?
     var timestamp: Date
     
     // La situation entrée par l'utilisateur

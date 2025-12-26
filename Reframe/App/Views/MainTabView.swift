@@ -12,13 +12,6 @@ struct MainTabView: View {
                 .tabItem { Label("History", systemImage: "clock") }
             ProfileView()
                 .tabItem { Label("Profile", systemImage: "person") }
-
-            /*
-             InsightView()
-             .tabItem {
-             Label("Insight", systemImage: "lightbulb")
-             }
-             */
         }
         .task(id: session.user?.id) {
             guard session.user != nil else { return }
@@ -28,7 +21,7 @@ struct MainTabView: View {
 }
 
 #Preview {
-    let sess = Session()
+    let session = Session()
     MainTabView()
-        .environment(sess)
+        .environment(session)
 }

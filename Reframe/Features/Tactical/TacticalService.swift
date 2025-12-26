@@ -46,3 +46,92 @@ final class TacticalService {
 
     struct EmptyResponse: Decodable {}
 }
+
+import SwiftData
+
+extension TacticalService {
+
+    // Structure pour mapper la réponse du serveur (à adapter selon ton API réelle)
+    struct RemoteTacticalSession: Decodable {
+        let id: Int
+        let situation: String
+        let created_at: Date
+        // Ajoute ici les autres champs que ton serveur renvoie (maneuver, etc.)
+
+        // Convertisseur Remote -> Local
+        func toLocal() -> TacticalSession {
+            // Ici, tu devras reconstruire l'objet complet avec les données du serveur
+            // Pour l'exemple, je mets des valeurs par défaut si manquantes
+            return TacticalSession(
+                situation: situation,
+                analysis: StrategicAnalysis(
+                    maneuver: Maneuver(id: 0, name: "Inconnu", description: "", powerScore: 0, emotionalImpact: ""),
+                    recommendedMoves: []
+                )
+            )
+        }
+    }
+
+    @MainActor
+    func synchronize(modelContext: ModelContext, token: String) async {
+        print("🛡️ [TACTICAL] Début synchro...")
+
+        // 1. Envoyer les sessions locales non-synchronisées
+        await uploadPendingSessions(modelContext: modelContext, token: token)
+
+        // 2. Récupérer l'historique du serveur
+        await downloadRemoteSessions(modelContext: modelContext, token: token)
+
+        try? modelContext.save()
+        print("🛡️ [TACTICAL] Synchro terminée.")
+    }
+
+    @MainActor
+    private func uploadPendingSessions(modelContext: ModelContext, token: String) async {
+        // Récupérer tout ce qui est "pending" ou "error"
+        let descriptor = FetchDescriptor<TacticalSession>(
+            predicate: #Predicate { $0.syncStatus == "pending" || $0.syncStatus == "error" }
+        )
+
+        guard let pendingSessions = try? modelContext.fetch(descriptor), !pendingSessions.isEmpty else { return }
+
+        for session in pendingSessions {
+            do {
+                // TODO: Créer l'endpoint 'save-session' côté serveur s'il n'existe pas
+                // let remoteId = try await server.saveTacticalSession(session, token: token)
+                // session.serverId = remoteId
+                session.syncStatus = "synced"
+                print("✅ Session locale uploadée: \(session.id)")
+            } catch {
+                print("❌ Échec upload session \(session.id): \(error)")
+                session.syncStatus = "error"
+            }
+        }
+    }
+
+    @MainActor
+    private func downloadRemoteSessions(modelContext: ModelContext, token: String) async {
+        do {
+            // TODO: Ajouter fetchTacticalHistory dans ReframeServer
+            // let remoteSessions: [RemoteTacticalSession] = try await server.fetchTacticalHistory(token: token)
+            let remoteSessions: [RemoteTacticalSession] = [] // Placeholder
+
+            // Récupérer les IDs déjà connus localement pour éviter les doublons
+            let localDescriptor = FetchDescriptor<TacticalSession>()
+            let localSessions = try modelContext.fetch(localDescriptor)
+            let localServerIds = Set(localSessions.compactMap { $0.serverId })
+
+            for remote in remoteSessions {
+                if !localServerIds.contains(remote.id) {
+                    let newSession = remote.toLocal()
+                    newSession.serverId = remote.id
+                    newSession.syncStatus = "synced"
+                    modelContext.insert(newSession)
+                    print("📥 Nouvelle session tactique reçue du serveur: \(remote.id)")
+                }
+            }
+        } catch {
+            print("❌ Erreur téléchargement historique: \(error)")
+        }
+    }
+}
