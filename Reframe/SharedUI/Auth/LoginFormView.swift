@@ -33,14 +33,17 @@ struct LoginFormView: View {
             }
 
             CustomTextField(placeholder: "Email", text: $email, isSecure: false, contentType: .emailAddress)
+                .accessibilityIdentifier("emailField")
             CustomTextField(placeholder: "Password", text: $password, isSecure: true)
                 .focused($passwordFieldIsFocused)
+                .accessibilityIdentifier("passwordField")
 
             if mode == .signup && passwordFieldIsFocused {
                 PasswordCriteriaView(password: password)
             }
 
             CustomButton(title: mode == .login ? "Login" : "Sign Up", action: onSubmit)
+                .accessibilityIdentifier("submitButton")
                 .disabled(isLoading)
                 .overlay {
                     if isLoading {

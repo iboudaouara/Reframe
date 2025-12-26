@@ -9,7 +9,8 @@ struct ReframeApp: App {
         WindowGroup {
             RootView()
                 .environment(session)
-                .modelContainer(for: Insight.self)
+                //.modelContainer(for: Insight.self)
+                .modelContainer(for: TacticalSession.self)
         }
     }
 }

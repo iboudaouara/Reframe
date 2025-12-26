@@ -7,7 +7,15 @@ struct Maneuver: Identifiable, Codable {
     let name: String // Ex.: "Délégation de Charge", "Double Contrainte"
     let description: String // Ex.: "L'antagoniste vous force à faire le travail à sa place"
     let powerScore: Int // Ex.: 80 (L'antagoniste domine)
-    let emotionalImpacT: String // "Frustration, Sentiment d'infériorité"
+    let emotionalImpact: String // "Frustration, Sentiment d'infériorité"
+/*
+    enum CodingKeys: String, CodingKey {
+            case id
+            case name
+            case description
+            case powerScore = "power_score"        // Mismatch probable
+            case emotionalImpact = "emotional_impact" // Mismatch probable + typo corrigée
+        }*/
 }
 
 // La Réplique (La Contre-Attaque du Playbook)
@@ -32,7 +40,7 @@ struct CounterMove: Identifiable, Codable {
     }
 }
 
-struct StrategicAnalysis: Decodable {
+struct StrategicAnalysis: Codable {
     let maneuver: Maneuver
     let recommendedMoves: [CounterMove] // Top 3 des répliques
 }

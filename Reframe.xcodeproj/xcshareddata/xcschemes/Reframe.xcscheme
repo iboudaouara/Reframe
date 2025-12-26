@@ -35,7 +35,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2BB446DC2EC5A0C1006ECE0C"
+               BlueprintIdentifier = "2B4D16CA2EFF1F6400C173AC"
                BuildableName = "ReframeTests.xctest"
                BlueprintName = "ReframeTests"
                ReferencedContainer = "container:Reframe.xcodeproj">

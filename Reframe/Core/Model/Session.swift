@@ -10,14 +10,13 @@ final class Session {
         case authenticated(User)
         case guest
     }
-
+    
     private(set) var state: State = .loading
 
     var selectedAvatar: ProfileIcon = .avatar1
     var isPickerPresented: Bool = false
 
-    private let authService = AuthService.shared
-    private let insightService = InsightService.shared
+    //private let insightService = InsightService.shared
 
     var user: User? {
         if case .authenticated(let u) = state { return u }
@@ -39,7 +38,10 @@ final class Session {
         return false
     }
 
-    init() {
+    private let authService: AuthServiceProtocol
+
+    init(authService: AuthServiceProtocol = AuthService.shared) {
+        self.authService = authService
         startSessionCheck()
         observeSessionExpiration()
     }
@@ -90,13 +92,29 @@ final class Session {
 
         print("🔄 Sync pour user: \(currentUser.id)")
 
-        // Nettoyage préventif
-        clearLocalInsights(modelContext: modelContext)
+        // ❌ SUPPRIMER OU COMMENTER CES LIGNES :
+        // clearLocalInsights(modelContext: modelContext)
+        // try? await insightService.synchronize(modelContext: modelContext, token: currentUser.token)
 
-        try? await insightService.synchronize(modelContext: modelContext, token: currentUser.token)
+        // Note: Tu pourras ajouter ici la synchro du TacticalService plus tard.
     }
+    /*
+     @MainActor
+     func synchronize(modelContext: ModelContext) async {
+     guard case .authenticated(let currentUser) = state else {
+     print("⚠️ Synchronisation annulée : Pas d'utilisateur connecté")
+     return
+     }
 
+     print("🔄 Sync pour user: \(currentUser.id)")
 
+     // Nettoyage préventif
+     clearLocalInsights(modelContext: modelContext)
+
+     try? await insightService.synchronize(modelContext: modelContext, token: currentUser.token)
+     }
+
+     */
 
     enum SessionError: LocalizedError {
         case missingToken
@@ -115,7 +133,7 @@ final class Session {
 
     @MainActor
     func continueAsGuest(modelContext: ModelContext) {
-        clearLocalInsights(modelContext: modelContext)
+        //clearLocalInsights(modelContext: modelContext)
         state = .guest
     }
 
@@ -181,8 +199,6 @@ final class Session {
         state = .unauthenticated
     }
 
-
-
     @MainActor
     func deleteAccount(modelContext: ModelContext) async throws {
         guard case .authenticated(let currentUser) = state else {
@@ -190,19 +206,33 @@ final class Session {
         }
 
         _ = try await AuthService.shared.deleteAccount(token: currentUser.token)
-        try modelContext.delete(model: Insight.self)
+
+        // ✅ REMPLACER Insight.self PAR TacticalSession.self
+        try modelContext.delete(model: TacticalSession.self)
+
         logout()
     }
 
-    @MainActor
-    private func clearLocalInsights(modelContext: ModelContext) {
-        do {
-            try modelContext.delete(model: Insight.self)
-            print("✅ Insights locaux supprimés")
-        } catch {
-            print("❌ Erreur lors de la suppression des insights locaux:", error)
-        }
-    }
+    /*
+     @MainActor
+     func deleteAccount(modelContext: ModelContext) async throws {
+     guard case .authenticated(let currentUser) = state else {
+     throw SessionError.missingToken
+     }
+
+     _ = try await AuthService.shared.deleteAccount(token: currentUser.token)
+     try modelContext.delete(model: Insight.self)
+     logout()
+     }*/
+    /*    @MainActor
+     private func clearLocalInsights(modelContext: ModelContext) {
+     do {
+     try modelContext.delete(model: Insight.self)
+     print("✅ Insights locaux supprimés")
+     } catch {
+     print("❌ Erreur lors de la suppression des insights locaux:", error)
+     }
+     }*/
 
     func observeSessionExpiration() {
         NotificationCenter.default.addObserver(

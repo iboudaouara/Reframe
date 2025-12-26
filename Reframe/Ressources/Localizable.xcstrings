@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld" : {
+
+    },
     "%lld utilisations" : {
 
     },
@@ -8,6 +11,9 @@
 
     },
     "%lld%% succès" : {
+
+    },
+    "✅ Analyse sauvegardée" : {
 
     },
     "Analyse de rapports de force" : {
@@ -32,6 +38,9 @@
           }
         }
       }
+    },
+    "Aucune analyse" : {
+
     },
     "Cancel" : {
       "localizations" : {
@@ -175,6 +184,9 @@
         }
       }
     },
+    "Fermer" : {
+
+    },
     "First Name" : {
       "localizations" : {
         "fr" : {
@@ -196,6 +208,7 @@
       }
     },
     "Generate your first insight to see it here" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -234,6 +247,9 @@
           }
         }
       }
+    },
+    "Historique" : {
+
     },
     "History" : {
       "localizations" : {
@@ -406,6 +422,7 @@
 
     },
     "My Insights" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -415,10 +432,8 @@
         }
       }
     },
-    "New" : {
-
-    },
     "No insights yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -481,6 +496,9 @@
         }
       }
     },
+    "OPTIONS SUGGÉRÉES" : {
+
+    },
     "OR" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -529,6 +547,9 @@
     "RADAR SOCIAL" : {
 
     },
+    "Rapport Tactique" : {
+
+    },
     "Receive personalized insights to improve mindset." : {
       "localizations" : {
         "fr" : {
@@ -558,6 +579,9 @@
           }
         }
       }
+    },
+    "Sauvegarder dans l'historique" : {
+
     },
     "Save" : {
       "localizations" : {
@@ -626,6 +650,9 @@
         }
       }
     },
+    "SITUATION INITIALE" : {
+
+    },
     "Stay on track with gentle reminders." : {
       "localizations" : {
         "fr" : {
@@ -635,6 +662,9 @@
           }
         }
       }
+    },
+    "Tactical" : {
+
     },
     "Terms of Service" : {
       "localizations" : {
@@ -685,6 +715,9 @@
           }
         }
       }
+    },
+    "Utilisez le Radar Social pour décoder votre première interaction." : {
+
     },
     "Welcome!" : {
       "localizations" : {

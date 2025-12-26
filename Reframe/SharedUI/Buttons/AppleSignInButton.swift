@@ -34,7 +34,8 @@ struct AppleSignInButton: View {
             }
         }.signInWithAppleButtonStyle(.white)
             .frame(width: 300, height: 45)
-            .padding(6)
+            .cornerRadius(6)
+            //.padding(6)
     }
 }
 

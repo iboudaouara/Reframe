@@ -6,22 +6,19 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
-            InsightView()
-                .tabItem {
-                    Label("Insight", systemImage: "lightbulb")
-                }
-            HistoryView()
-                .tabItem {
-                    Label("History", systemImage: "clock")
-                }
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                }
             StrategicDashboardView()
-                .tabItem {
-                    Label("New", systemImage: "person")
-                }
+                .tabItem { Label("Tactical", systemImage: "shield.righthalf.filled") }
+            HistoryView()
+                .tabItem { Label("History", systemImage: "clock") }
+            ProfileView()
+                .tabItem { Label("Profile", systemImage: "person") }
+
+            /*
+             InsightView()
+             .tabItem {
+             Label("Insight", systemImage: "lightbulb")
+             }
+             */
         }
         .task(id: session.user?.id) {
             guard session.user != nil else { return }

@@ -1,9 +1,11 @@
 import SwiftUI
+import SwiftData
 
 struct StrategicDashboardView: View {
     @Environment(Session.self) private var session
     @Environment(\.modelContext) private var modelContext
-    
+    @State private var isSaved: Bool = false
+
     @State private var situationInput: String = ""
     @State private var analysis: StrategicAnalysis?
     @State private var isLoading: Bool = false
@@ -38,6 +40,26 @@ struct StrategicDashboardView: View {
                         ForEach(analysis.recommendedMoves) {
                             move in CounterMoveRow(move: move)
                         }
+
+                        if !isSaved {
+                            Button(action: {
+                                saveAnalysis(analysis: analysis, situation: situationInput)
+                            }) {
+                                Label("Sauvegarder dans l'historique", systemImage: "square.and.arrow.down")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(12)
+                            }
+                            .padding(.top, 8)
+                        } else {
+                            Text("✅ Analyse sauvegardée")
+                                .foregroundStyle(.green)
+                                .padding(.top, 8)
+                        }
+
                         Button("Nouvelle Analyse") {
                             withAnimation {
                                 self.analysis = nil;
@@ -60,6 +82,19 @@ struct StrategicDashboardView: View {
         } message: {
             Text(errorMessage ?? "Une erreur inconnue est survenue.")
         }
+    }
+
+    func saveAnalysis(analysis: StrategicAnalysis, situation: String) {
+        let session = TacticalSession(situation: situation, analysis: analysis)
+        modelContext.insert(session)
+
+        withAnimation {
+            isSaved = true
+        }
+
+        // Petit feedback haptique
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
     }
 
     var headerView: some View {
@@ -173,7 +208,7 @@ struct ManeuverCard:View {
             HStack {
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundStyle(.yellow)
-                Text(maneuver.emotionalImpacT)
+                Text(maneuver.emotionalImpact)
                     .font(.caption)
                     .italic()
                     .foregroundStyle(.yellow)

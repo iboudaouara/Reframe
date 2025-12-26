@@ -56,6 +56,7 @@ struct HomeBottomSheet: View {
         VStack {
             HStack {
                 PrimaryButton(title: "Login") { navigate(.login) }
+                    .accessibilityIdentifier("loginNavigationButton")
                 SecondaryButton(title: "Sign Up") { navigate(.signup) }
             }
             Separator(text: "OR")
@@ -64,13 +65,12 @@ struct HomeBottomSheet: View {
                 session.continueAsGuest(modelContext: modelContext)
             }) {
                 Text("Continue as Guest")
-                    .font(.system(size: 19, weight: .medium))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(.black)
                     .frame(width: 300, height: 45)
                     .background(Color.white)
                     .cornerRadius(6)
             }
-            .padding(6)
         }.padding(40)
     }
 }
