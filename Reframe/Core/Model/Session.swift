@@ -195,6 +195,18 @@ final class Session {
         logout()
     }
 
+    // Dans Session.swift
+    @MainActor
+    func updateAvatar(_ icon: ProfileIcon) async throws {
+        guard case .authenticated(var currentUser) = state else { return }
+
+        // Mise à jour optimiste immédiate
+        currentUser.profileIcon = icon
+        state = .authenticated(currentUser)
+
+        // TODO: Appel réseau ici pour sauvegarder (ex: authService.updateProfile(...))
+    }
+
     func observeSessionExpiration() {
         NotificationCenter.default.addObserver(
             forName: .userSessionExpired,

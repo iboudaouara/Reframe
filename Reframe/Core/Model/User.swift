@@ -7,6 +7,8 @@ struct User: Codable, Identifiable {
     let lastName: String?
     let token: String
 
+    var profileIcon: ProfileIcon = .avatar1
+
     enum CodingKeys: String, CodingKey {
         case id
         case email
