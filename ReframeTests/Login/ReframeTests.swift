@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import Reframe // Indispensable pour accéder à vos classes internes (Session, User, etc.)
+@testable import Reframe
 
 struct ReframeTests {
 
