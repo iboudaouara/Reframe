@@ -95,13 +95,15 @@ extension TacticalService {
 
         guard let pendingSessions = try? modelContext.fetch(descriptor), !pendingSessions.isEmpty else { return }
 
+        // Remplacer le bloc existant par :
         for session in pendingSessions {
             do {
-                // TODO: Créer l'endpoint 'save-session' côté serveur s'il n'existe pas
-                // let remoteId = try await server.saveTacticalSession(session, token: token)
-                // session.serverId = remoteId
+                // APPEL AU SERVEUR
+                let remoteId = try await server.saveTacticalSession(session, token: token)
+
+                session.serverId = remoteId
                 session.syncStatus = "synced"
-                print("✅ Session locale uploadée: \(session.id)")
+                print("✅ Session locale uploadée: \(session.id) -> Server ID: \(remoteId)")
             } catch {
                 print("❌ Échec upload session \(session.id): \(error)")
                 session.syncStatus = "error"
@@ -111,23 +113,23 @@ extension TacticalService {
 
     @MainActor
     private func downloadRemoteSessions(modelContext: ModelContext, token: String) async {
+        // Remplacer le bloc existant par :
         do {
-            // TODO: Ajouter fetchTacticalHistory dans ReframeServer
-            // let remoteSessions: [RemoteTacticalSession] = try await server.fetchTacticalHistory(token: token)
-            let remoteSessions: [RemoteTacticalSession] = [] // Placeholder
+            // APPEL AU SERVEUR
+            let remoteSessions = try await server.fetchTacticalHistory(token: token)
 
-            // Récupérer les IDs déjà connus localement pour éviter les doublons
             let localDescriptor = FetchDescriptor<TacticalSession>()
             let localSessions = try modelContext.fetch(localDescriptor)
             let localServerIds = Set(localSessions.compactMap { $0.serverId })
 
             for remote in remoteSessions {
+                // Si on ne l'a pas déjà en local
                 if !localServerIds.contains(remote.id) {
                     let newSession = remote.toLocal()
                     newSession.serverId = remote.id
                     newSession.syncStatus = "synced"
                     modelContext.insert(newSession)
-                    print("📥 Nouvelle session tactique reçue du serveur: \(remote.id)")
+                    print("📥 Nouvelle session importée du serveur: \(remote.id)")
                 }
             }
         } catch {

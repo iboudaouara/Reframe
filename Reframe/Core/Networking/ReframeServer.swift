@@ -328,3 +328,53 @@ final class ReframeServer {
     }
 }
 
+// Dans ReframeServer.swift
+
+// Structure pour l'envoi
+struct SaveTacticalSessionRequest: Encodable {
+    let situation: String
+    let maneuverName: String
+    let maneuverDescription: String
+    let powerScore: Int
+    let emotionalImpact: String
+    let timestamp: Date
+}
+
+// Structure de réponse pour la sauvegarde
+struct SaveSessionResponse: Decodable {
+    let id: Int
+}
+
+extension ReframeServer {
+
+    // 1. Sauvegarder une session
+    func saveTacticalSession(_ session: TacticalSession, token: String) async throws -> Int {
+        let body = SaveTacticalSessionRequest(
+            situation: session.situation,
+            maneuverName: session.maneuverName,
+            maneuverDescription: session.maneuverDescription,
+            powerScore: session.powerScore,
+            emotionalImpact: session.emotionalImpact,
+            timestamp: session.timestamp
+        )
+
+        // On suppose que l'endpoint est /api/tactical/sessions
+        let response: SaveSessionResponse = try await request(
+            endpoint: "sessions",
+            method: "POST",
+            body: body,
+            urlBase: AppURL.tacticalURL
+        )
+        return response.id
+    }
+
+    // 2. Récupérer l'historique
+    func fetchTacticalHistory(token: String) async throws -> [TacticalService.RemoteTacticalSession] {
+        return try await request(
+            endpoint: "history",
+            method: "GET",
+            urlBase: AppURL.tacticalURL
+        )
+    }
+}
+
