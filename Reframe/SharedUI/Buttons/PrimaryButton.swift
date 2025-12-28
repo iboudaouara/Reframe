@@ -33,7 +33,7 @@ struct PrimaryButton: View {
                 Capsule().stroke(Color.white, lineWidth: 1)
             )
             .clipShape(Capsule())
-            .frame(maxWidth: 160)
+            .frame(maxWidth: .infinity)
     }
 }
 

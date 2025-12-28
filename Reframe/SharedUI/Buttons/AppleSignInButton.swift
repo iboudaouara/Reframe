@@ -33,7 +33,7 @@ struct AppleSignInButton: View {
                 print("Apple login failed: \(error)")
             }
         }.signInWithAppleButtonStyle(.white)
-            .frame(width: 300, height: 45)
+            .frame(height: 45)
             .cornerRadius(6)
             //.padding(6)
     }
