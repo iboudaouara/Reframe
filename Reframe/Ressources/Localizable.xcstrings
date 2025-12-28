@@ -20,6 +20,7 @@
 
     },
     "and" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -312,6 +313,7 @@
       }
     },
     "I agree to the" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
