@@ -1,5 +1,4 @@
 import SwiftUI
-import SwiftData
 
 struct RootView: View {
     @Environment(UserSession.self) private var session
@@ -18,3 +17,5 @@ struct RootView: View {
         }
     }
 }
+
+
