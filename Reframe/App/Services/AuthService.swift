@@ -89,7 +89,7 @@ extension AuthService {
     
     func loginWithApple(data: AppleAuthData, definitiveEmail: String) async throws -> User {
         let requestBody = AppleLoginRequest(
-            email: data.email,
+            email: definitiveEmail,
             first_name: data.firstName,
             last_name: data.lastName,
             authorization_code: data.authorizationCode

@@ -12,7 +12,6 @@ struct RootView: View {
                 MainTabView()
             case .unauthenticated:
                 AuthView()
-                    .transition(.scale(scale: 12).combined(with: .opacity))
             }
         }
     }
