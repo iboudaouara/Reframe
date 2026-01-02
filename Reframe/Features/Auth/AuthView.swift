@@ -1,69 +1,72 @@
 import SwiftUI
 
 struct AuthView: View {
-    
     @State private var path = NavigationPath()
-    @Environment(Session.self) private var session
+    @Environment(UserSession.self) private var session
     @Environment(\.modelContext) private var modelContext
-    
+
     var body: some View {
         NavigationStack(path: $path) {
             GeometryReader { geometry in
                 ZStack {
-                    HomeBackground()
-                    
+                    HomeBackground() // Fond fixe
+
                     ScrollView(showsIndicators: false) {
-                        VStack(spacing: 24) {
-                            
-                            Spacer()
-                            
-                            // --- ZONE BRANDING ---
-                            HeroText(text: "home.hero.title")
-                                .padding(.horizontal, 24)
-                                .padding(.bottom, 20)
-                            
-                            // --- CARROUSEL ---
-                            CarouselFeatures()
-                                .frame(height: 200)
-                            
-                            Spacer()
-                            
-                            // --- ZONE BOUTONS ---
+                        VStack(spacing: 0) { // Spacing 0 car on utilise des Spacer()
+
+                            Spacer() // Pousse vers le bas pour centrer
+
+                            VStack(spacing: 24) {
+                                // --- BRANDING ---
+                                HeroText(text: "home.hero.title")
+                                    .padding(.bottom, 20)
+
+                                // --- CARROUSEL ---
+                                CarouselFeatures()
+                                // .frame(height: 220)
+                            }
+                            .padding(.horizontal, 24) // Padding global pour le haut
+
+                            Spacer() // Équilibre l'espace
+
+                            // --- BOUTONS ---
                             VStack(spacing: 16) {
-                                // 1. Login
-                                PrimaryButton(title: "Login") {
-                                    path.append(HomeDestination.login)
+
+                                HStack {
+                                    PrimaryButton(title: "Login") {
+                                        path.append(HomeDestination.login)
+                                    }
+                                    SecondaryButton(title: "Sign Up") {
+                                        path.append(HomeDestination.signup)
+                                    }
                                 }
-                                
-                                // 2. Sign Up
-                                SecondaryButton(title: "Sign Up") {
-                                    path.append(HomeDestination.signup)
-                                }
-                                
-                                // 3. Apple (On l'enveloppe pour forcer la même largeur que les autres)
+
                                 AppleSignInButton()
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 45) // Hauteur standard
-                                    .clipShape(RoundedRectangle(cornerRadius: 6)) // Même arrondi que AppleSignInButton interne
-                                
-                                // 4. Invité
+
                                 Button("Continue as Guest") {
-                                    session.continueAsGuest(modelContext: modelContext)
+                                    withAnimation(.easeIn(duration: 0.5)) {
+                                        session.continueAsGuest(
+                                            modelContext: modelContext
+                                        )
+                                    }
                                 }
+
                                 .font(.footnote)
                                 .foregroundStyle(.white.opacity(0.8))
                                 .padding(.top, 8)
                             }
-                            // C'est ici qu'on contrôle la largeur de TOUS les boutons
+                            // Largeur max pour iPad/Paysage, sinon prend tout l'espace moins le padding
                             .frame(maxWidth: 400)
                             .padding(.horizontal, 32)
-                            .padding(.bottom, geometry.safeAreaInsets.bottom > 0 ? 0 : 30)
+                            .padding(.bottom, 40)
                         }
-                        .frame(width: geometry.size.width)
+                        // C'EST ICI LA CLÉ :
                         .frame(minHeight: geometry.size.height)
-                    }
-                }
+                        .frame(width: geometry.size.width)
+                    }.frame(width: geometry.size.width)
+                }.frame(width: geometry.size.width)
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
             .navigationDestination(for: HomeDestination.self) { destination in
                 switch destination {
                 case .login: LoginView()
@@ -72,48 +75,6 @@ struct AuthView: View {
                 }
             }
         }
-    }
-    /*
-     func openSheet() {
-     detent = .fraction(0.4)
-     showSheet = true
-     }
-     
-     func closeSheet() {
-     showSheet = false
-     }
-     
-     func navigate(to destination: HomeDestination) {
-     path.append(destination)
-     closeSheet()
-     }*/
-}
-
-struct HomeBottomSheet: View {
-    var navigate: (HomeDestination) -> Void
-    @Environment(Session.self) var session
-    @Environment(\.modelContext) var modelContext
-    
-    var body: some View {
-        VStack {
-            HStack {
-                PrimaryButton(title: "Login") { navigate(.login) }
-                    .accessibilityIdentifier("loginNavigationButton")
-                SecondaryButton(title: "Sign Up") { navigate(.signup) }
-            }
-            Separator(text: "OR")
-            AppleSignInButton()
-            Button(action: {
-                session.continueAsGuest(modelContext: modelContext)
-            }) {
-                Text("Continue as Guest")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundColor(.black)
-                    .frame(width: 300, height: 45)
-                    .background(Color.white)
-                    .cornerRadius(6)
-            }
-        }.padding(40)
     }
 }
 
@@ -125,5 +86,7 @@ enum HomeDestination: Hashable {
 
 
 #Preview {
+    let session = UserSession()
     AuthView()
+        .environment(session)
 }

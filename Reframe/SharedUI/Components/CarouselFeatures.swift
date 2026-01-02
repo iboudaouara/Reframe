@@ -10,7 +10,7 @@ struct CarouselFeatures: View {
                     Image(systemName: feature.imageName)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 120)
+                        .frame(height: 100)
                         .foregroundColor(.black)
 
                     Text(feature.title)

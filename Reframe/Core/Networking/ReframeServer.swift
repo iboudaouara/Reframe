@@ -161,11 +161,6 @@ final class ReframeServer {
 
             let (data, response) = try await URLSession.shared.data(for: request)
 
-            // ... Le reste de ta fonction reste identique ...
-            if let httpResponse = response as? HTTPURLResponse {
-                 // print("📢 [SERVER] Status Code reçu : \(httpResponse.statusCode)")
-            }
-
             guard let httpResp = response as? HTTPURLResponse else {
                 throw URLError(.badServerResponse)
             }

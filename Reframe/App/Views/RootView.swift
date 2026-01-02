@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct RootView: View {
-    @Environment(Session.self) private var session
+    @Environment(UserSession.self) private var session
 
     var body: some View {
         Group {
@@ -13,6 +13,7 @@ struct RootView: View {
                 MainTabView()
             case .unauthenticated:
                 AuthView()
+                    .transition(.scale(scale: 12).combined(with: .opacity))
             }
         }
     }

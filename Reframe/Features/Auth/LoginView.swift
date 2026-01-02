@@ -7,7 +7,7 @@ struct LoginView: View {
     @State private var password = ""
     @State private var isLoading = false
     @State private var errorMessage: String?
-    @Environment(Session.self) private var session
+    @Environment(UserSession.self) private var session
     
     private var isShowingAlert: Binding<Bool> {
         Binding(
@@ -69,7 +69,7 @@ struct LoginView: View {
 
 
 #Preview {
-    let session = Session()
+    let session = UserSession()
     LoginView()
         .environment(session)
 }

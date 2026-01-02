@@ -12,7 +12,7 @@ struct InsightView: View {
     //@State private var controller = InsightController()
     @State private var showSaveConfirmation = false
     private let insightService = InsightService.shared
-    @Environment(Session.self) var session
+    @Environment(UserSession.self) var session
 
     var body: some View {
         ZStack {

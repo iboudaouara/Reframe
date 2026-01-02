@@ -3,7 +3,7 @@ import SwiftData
 
 struct ProfileView: View {
 
-    @Environment(Session.self) private var session
+    @Environment(UserSession.self) private var session
     @Environment(\.modelContext) private var modelContext
 
     @State private var showingDeleteAlert = false
@@ -17,7 +17,7 @@ struct ProfileView: View {
 
                 Spacer(minLength: 20)
 
-                if session.isGuest {
+                if session.state.isGuest {
 
                     guestView
 

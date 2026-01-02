@@ -4,9 +4,9 @@ import SwiftUI
 import Combine
 
 class SignInWithAppleController: NSObject, ObservableObject {
-    private let session: Session
+    private let session: UserSession
 
-    init(session: Session) {
+    init(session: UserSession) {
         self.session = session
     }
 

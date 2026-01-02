@@ -4,8 +4,8 @@ import AuthenticationServices
 
 struct AppleSignInButton: View {
     
-    @Environment(Session.self) var userSession
-    
+    @Environment(UserSession.self) var userSession
+
     var body: some View {
         SignInWithAppleButton { request in
             request.requestedScopes = [.fullName, .email]
@@ -34,7 +34,8 @@ struct AppleSignInButton: View {
             }
         }.signInWithAppleButtonStyle(.white)
             .frame(height: 45)
-            .cornerRadius(6)
+            .frame(maxWidth: .infinity)
+            //.cornerRadius(6)
             //.padding(6)
     }
 }

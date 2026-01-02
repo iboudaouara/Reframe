@@ -1,5 +1,20 @@
 import SwiftUI
 
+enum AuthError: Error {
+    case noTokenFound
+    case invalidToken
+}
+
+protocol AuthServiceProtocol {
+    func login(email: String, password: String) async throws -> User
+    func signup(firstName: String, lastName: String, email: String, password: String) async throws -> User
+    func logout()
+    func deleteAccount(token: String) async throws -> DeleteAccountResponse
+    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws -> User
+    func verifyTokenAndFetchUser(token: String) async throws -> User
+    func loadUserFromSession() async throws -> User
+}
+
 final class AuthService : AuthServiceProtocol {
     static let shared = AuthService()
     let server = ReframeServer.shared
@@ -18,6 +33,16 @@ final class AuthService : AuthServiceProtocol {
             ])
     }
 
+    // Rappel pour AuthService
+    func loadUserFromSession() async throws -> User {
+        guard let token = KeychainManager.shared.getToken() else {
+            throw AuthError.noTokenFound
+        }
+        // Ici on suppose que tu as une fonction pour valider le token ou créer l'user
+        return try await verifyTokenAndFetchUser(token: token)
+    }
+
+
     func logout() {
         KeychainManager.shared.deleteToken()
     }
@@ -34,6 +59,7 @@ final class AuthService : AuthServiceProtocol {
 
     func verifyTokenAndFetchUser(token: String) async throws -> User {
         let headers = ["Authorization": "Bearer \(token)"]
+        print("Token to verify: \(token)")
         return try await server.request(endpoint: "verify-token", method: "POST", headers: headers)
     }
 }
@@ -42,14 +68,7 @@ struct DeleteAccountResponse: Decodable {
     let message: String
 }
 
-protocol AuthServiceProtocol {
-    func login(email: String, password: String) async throws -> User
-    func signup(firstName: String, lastName: String, email: String, password: String) async throws -> User
-    func logout()
-    func deleteAccount(token: String) async throws -> DeleteAccountResponse
-    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws -> User
-    func verifyTokenAndFetchUser(token: String) async throws -> User
-}
+
 
 struct AppleLoginRequest: Encodable {
     let email: String?

@@ -22,7 +22,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		2B56E3BA2EC926AB004C29CC /* Exceptions for "Reframe" folder in "Reframe" target */ = {
+		2B3E60F42F06700700AF7CE5 /* Exceptions for "Reframe" folder in "Reframe" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Supporting/Info.plist,
@@ -40,7 +40,7 @@
 		2BB446D02EC5A0BF006ECE0C /* Reframe */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				2B56E3BA2EC926AB004C29CC /* Exceptions for "Reframe" folder in "Reframe" target */,
+				2B3E60F42F06700700AF7CE5 /* Exceptions for "Reframe" folder in "Reframe" target */,
 			);
 			path = Reframe;
 			sourceTree = "<group>";
