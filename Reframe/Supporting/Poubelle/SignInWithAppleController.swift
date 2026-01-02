@@ -32,7 +32,7 @@ extension SignInWithAppleController: ASAuthorizationControllerDelegate, ASAuthor
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        guard let appleID = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
+        /*guard let appleID = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
 
         let userID = appleID.user
         let _ = appleID.fullName?.givenName ?? "Apple User"
@@ -43,7 +43,7 @@ extension SignInWithAppleController: ASAuthorizationControllerDelegate, ASAuthor
 
         Task {
             try await session.loginWithApple(userIdentifier: userID, email: email, firstName: firstName, lastName: lastName)
-        }
+        }*/
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {

@@ -119,24 +119,19 @@ final class UserSession {
     }
 
     @MainActor
-    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws {
+    func loginWithApple(data: AppleAuthData) async throws {
         state = .loading
 
-        let cachedEmail = KeychainManager.shared.getEmailForAppleID(userIdentifier)
-        guard let definitiveEmail = email ?? cachedEmail else {
+        let cachedEmail = KeychainManager.shared.getEmailForAppleID(data.userIdentifier)
+        guard let definitiveEmail = data.email ?? cachedEmail else {
             state = .unauthenticated
             throw SessionError.missingToken
         }
 
-        let user = try await AuthService.shared.loginWithApple(
-            userIdentifier: userIdentifier,
-            email: definitiveEmail,
-            firstName: firstName,
-            lastName: lastName
-        )
+        let user = try await AuthService.shared.loginWithApple(data: data, definitiveEmail: definitiveEmail)
 
         completeAuthentication(with: user)
-        KeychainManager.shared.saveEmailForAppleID(definitiveEmail, for: userIdentifier)
+        KeychainManager.shared.saveEmailForAppleID(definitiveEmail, for: data.userIdentifier)
     }
 
     @MainActor

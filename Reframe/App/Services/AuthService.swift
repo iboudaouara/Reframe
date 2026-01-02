@@ -10,7 +10,7 @@ protocol AuthServiceProtocol {
     func signup(firstName: String, lastName: String, email: String, password: String) async throws -> User
     func logout()
     func deleteAccount(token: String) async throws -> DeleteAccountResponse
-    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws -> User
+    func loginWithApple(data: AppleAuthData, definitiveEmail: String) async throws -> User
     func verifyTokenAndFetchUser(token: String) async throws -> User
     func loadUserFromSession() async throws -> User
 }
@@ -22,7 +22,7 @@ final class AuthService : AuthServiceProtocol {
     func login(email: String, password: String) async throws -> User {
         try await server.request(endpoint: "login", method: "POST", body: ["email": email, "password": password])
     }
-
+    
     func signup(firstName: String, lastName: String, email: String, password: String) async throws -> User {
         try await server
             .request(endpoint: "signup", method: "POST", body: [
@@ -32,7 +32,7 @@ final class AuthService : AuthServiceProtocol {
                 "password": password
             ])
     }
-
+    
     // Rappel pour AuthService
     func loadUserFromSession() async throws -> User {
         guard let token = KeychainManager.shared.getToken() else {
@@ -41,22 +41,22 @@ final class AuthService : AuthServiceProtocol {
         // Ici on suppose que tu as une fonction pour valider le token ou créer l'user
         return try await verifyTokenAndFetchUser(token: token)
     }
-
-
+    
+    
     func logout() {
         KeychainManager.shared.deleteToken()
     }
-
+    
     /*
-    func loginWithApple(userIdentifier: String, email: String?, fullName: String?) async throws -> User {
-        try await server.request(endpoint: "apple-login", method: "POST", body: ["apple_id": userIdentifier])
-    }*/
-
+     func loginWithApple(userIdentifier: String, email: String?, fullName: String?) async throws -> User {
+     try await server.request(endpoint: "apple-login", method: "POST", body: ["apple_id": userIdentifier])
+     }*/
+    
     func deleteAccount(token: String) async throws -> DeleteAccountResponse {
         try await server
             .request(endpoint: "delete-account", method: "DELETE", headers: ["Authorization": "Bearer \(token)"])
     }
-
+    
     func verifyTokenAndFetchUser(token: String) async throws -> User {
         let headers = ["Authorization": "Bearer \(token)"]
         print("Token to verify: \(token)")
@@ -74,21 +74,31 @@ struct AppleLoginRequest: Encodable {
     let email: String?
     let first_name: String?
     let last_name: String?
+    let authorization_code: String?
+}
+
+struct AppleAuthData {
+    let userIdentifier: String
+    let email: String?
+    let firstName: String?
+    let lastName: String?
+    let authorizationCode: String?
 }
 
 extension AuthService {
-
-    func loginWithApple(userIdentifier: String, email: String?, firstName: String?, lastName: String?) async throws -> User {
-            let requestBody = AppleLoginRequest(
-                email: email,
-                first_name: firstName,
-                last_name: lastName
-            )
-
-            return try await server.request(
-                endpoint: "apple-login",
-                method: "POST",
-                body: requestBody
-            )
-        }
+    
+    func loginWithApple(data: AppleAuthData, definitiveEmail: String) async throws -> User {
+        let requestBody = AppleLoginRequest(
+            email: data.email,
+            first_name: data.firstName,
+            last_name: data.lastName,
+            authorization_code: data.authorizationCode
+        )
+        
+        return try await server.request(
+            endpoint: "apple-login",
+            method: "POST",
+            body: requestBody
+        )
+    }
 }

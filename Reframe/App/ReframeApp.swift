@@ -13,3 +13,5 @@ struct ReframeApp: App {
         }
     }
 }
+
+#warning("TODO: Simuler une panne serveur pour vérifier le timeout des requêtes")

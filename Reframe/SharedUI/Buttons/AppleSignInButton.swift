@@ -20,14 +20,22 @@ struct AppleSignInButton: View {
                     let firstName = credential.fullName?.givenName
                     let lastName = credential.fullName?.familyName
 
+                    var authCodeString: String? = nil
+                    if let authCodeData = credential.authorizationCode {
+                            authCodeString = String(data: authCodeData, encoding: .utf8)
+                        }
+
+                    let authData = AppleAuthData(
+                        userIdentifier: userId,
+                        email: email,
+                        firstName: firstName,
+                        lastName: lastName,
+                        authorizationCode: authCodeString
+                    )
+
                     Task {
                         try await userSession
-                            .loginWithApple(
-                                userIdentifier: userId,
-                                email: email,
-                                firstName: firstName,
-                                lastName: lastName
-                            )
+                            .loginWithApple(data: authData)
                     }                }
             case .failure(let error):
                 print("Apple login failed: \(error)")
