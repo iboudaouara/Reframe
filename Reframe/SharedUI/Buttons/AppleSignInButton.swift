@@ -4,7 +4,7 @@ import AuthenticationServices
 
 struct AppleSignInButton: View {
     
-    @Environment(UserSession.self) var userSession
+    @Environment(Session.self) var userSession
 
     var body: some View {
         SignInWithAppleButton { request in

@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @Environment(UserSession.self) private var session
+
+    @Environment(Session.self) private var session
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
@@ -18,12 +19,4 @@ struct MainTabView: View {
             await session.synchronize(modelContext: modelContext)
         }
     }
-}
-
-#Preview {
-    let session = UserSession()
-
-    MainTabView()
-        .environment(session)
-        .environment(\.locale, .init(identifier: "fr"))
 }

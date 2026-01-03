@@ -19,17 +19,6 @@
     "Analyse de rapports de force" : {
 
     },
-    "and" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "et"
-          }
-        }
-      }
-    },
     "At least 8 characters" : {
       "localizations" : {
         "fr" : {
@@ -152,16 +141,6 @@
     "DOMINATION ADVERSE:" : {
 
     },
-    "Done" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminé"
-          }
-        }
-      }
-    },
     "Email" : {
       "localizations" : {
         "fr" : {
@@ -175,16 +154,6 @@
     "Erreur Serveur" : {
 
     },
-    "Error: %@" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erreur: %@"
-          }
-        }
-      }
-    },
     "Fermer" : {
 
     },
@@ -194,27 +163,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prénom"
-          }
-        }
-      }
-    },
-    "Generate Insight" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Générer la rétroaction"
-          }
-        }
-      }
-    },
-    "Generate your first insight to see it here" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Générer votre première rétroaction pour la voir ici"
           }
         }
       }
@@ -312,57 +260,6 @@
         }
       }
     },
-    "I agree to the" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "J’accepte"
-          }
-        }
-      }
-    },
-    "Insight" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rétroaction"
-          }
-        }
-      }
-    },
-    "Insight Details" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Détails de la rétroaction"
-          }
-        }
-      }
-    },
-    "Insight saved locally, but failed to sync: %@" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rétroaction sauvegardée localement, mais la synchronisation a échoué : %@"
-          }
-        }
-      }
-    },
-    "Insight:" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rétroaction:"
-          }
-        }
-      }
-    },
     "Last Name" : {
       "localizations" : {
         "fr" : {
@@ -423,28 +320,6 @@
     "MANOEUVRE DÉTECTÉE" : {
 
     },
-    "My Insights" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mes rétroactions"
-          }
-        }
-      }
-    },
-    "No insights yet" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune rétroaction n’a été encore générée."
-          }
-        }
-      }
-    },
     "Nouvelle Analyse" : {
 
     },
@@ -500,6 +375,16 @@
     },
     "OPTIONS SUGGÉRÉES" : {
 
+    },
+    "Or" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ou"
+          }
+        }
+      }
     },
     "OR" : {
       "extractionState" : "manual",
@@ -585,32 +470,12 @@
     "Sauvegarder dans l'historique" : {
 
     },
-    "Save" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sauvegarder"
-          }
-        }
-      }
-    },
     "Separator" : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Séparateur"
-          }
-        }
-      }
-    },
-    "Server returned an invalid response." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le serveur a renvoyé une réponse invalide."
           }
         }
       }
@@ -698,26 +563,6 @@
         }
       }
     },
-    "Turn your thought into an insight" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transformez votre pensée en rétroaction"
-          }
-        }
-      }
-    },
-    "Type your thought here..." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Écrivez votre pensée ici..."
-          }
-        }
-      }
-    },
     "Utilisez le Radar Social pour décoder votre première interaction." : {
 
     },
@@ -727,26 +572,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bienvenue!"
-          }
-        }
-      }
-    },
-    "You must be logged in to save insights." : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous devez être connecté pour sauvegarder vos rétroactions."
-          }
-        }
-      }
-    },
-    "Your Thought" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre Pensée"
           }
         }
       }

@@ -71,7 +71,7 @@ struct AppButton: View {
             .padding()
             .background(background)
             .overlay(
-                Capsule().stroke(border, lineWidth: 1)
+                Capsule().stroke(border, lineWidth: 5)
             )
             .clipShape(Capsule())
             .frame(maxWidth: 160)
@@ -93,15 +93,20 @@ struct AppButton: View {
 
     private var border: Color {
         switch style {
-        case .primary: return .white
+        case .primary: return .black
         case .secondary: return .black
         }
     }
 }
 
 #Preview {
+    let session = Session()
+
+    AuthView()
+        .environment(session)
+    /*
     HStack {
         AppButton("Login", style: .primary, action: {})
         AppButton("Sign Up", style: .secondary, action: {})
-    }
+    }*/
 }

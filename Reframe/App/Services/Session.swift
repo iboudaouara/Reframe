@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @Observable
-final class UserSession {
+final class Session {
     
     private let authService: AuthServiceProtocol
     

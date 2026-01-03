@@ -1,10 +1,3 @@
-//
-//  HomeBackground.swift
-//  Reframe
-//
-//  Created by Ibrahim Boudaouara on 2025-11-21.
-//
-
 import SwiftUI
 
 struct HomeBackground: View {

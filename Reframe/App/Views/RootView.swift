@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct RootView: View {
-    @Environment(UserSession.self) private var userSession
+    
+    @Environment(Session.self) private var session
 
     var body: some View {
         Group {
-            switch userSession.state {
+            switch session.state {
             case .loading:
                 LoadingView()
             case .authenticated, .guest:
@@ -16,13 +17,3 @@ struct RootView: View {
         }
     }
 }
-
-#Preview {
-    let userSession = UserSession()
-
-    RootView()
-        .environment(userSession)
-        .environment(\.locale, .init(identifier: "fr"))
-}
-
-

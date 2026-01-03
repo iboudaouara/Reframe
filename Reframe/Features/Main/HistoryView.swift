@@ -5,7 +5,7 @@ struct HistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \TacticalSession.timestamp, order: .reverse) private var history: [TacticalSession]
     @State private var selectedSession: TacticalSession?
-    @Environment(UserSession.self) private var session
+    @Environment(Session.self) private var session
     
     var body: some View {
         Group {

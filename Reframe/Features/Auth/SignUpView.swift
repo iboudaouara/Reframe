@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @Environment(UserSession.self) var session
-    @State private var email = ""
-    @State private var password = ""
+    @Environment(Session.self) var session
     @State private var isLoading = false
     @State private var errorMessage: String?
 
@@ -11,7 +9,8 @@ struct SignUpView: View {
 
     @State private var firstName = ""
     @State private var lastName = ""
-
+    @State private var email = ""
+    @State private var password = ""
 
     private var isShowingAlert: Binding<Bool> {
         Binding(
@@ -94,7 +93,7 @@ struct SignUpView: View {
 }
 
 #Preview {
-    let session = UserSession()
+    let session = Session()
     SignUpView()
         .environment(session)
 }

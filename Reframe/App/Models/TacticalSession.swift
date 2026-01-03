@@ -14,16 +14,14 @@ final class TacticalSession {
     var emotionalImpact: String
     var recommendedMoves: [CounterMove]
     var syncStatus: String = "pending"
-    
+
     init(situation: String, analysis: StrategicAnalysis) {
         self.timestamp = Date()
         self.situation = situation
-
         self.maneuverName = analysis.maneuver.name
         self.maneuverDescription = analysis.maneuver.description
         self.powerScore = analysis.maneuver.powerScore
         self.emotionalImpact = analysis.maneuver.emotionalImpact
-
         self.recommendedMoves = analysis.recommendedMoves
     }
 }

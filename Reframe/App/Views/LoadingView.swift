@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct LoadingView: View {
+
     var body: some View {
         VStack {
             ProgressView(LocalizedStringKey("Checking your session..."))
@@ -14,9 +15,4 @@ struct LoadingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground))
     }
-}
-
-#Preview {
-    LoadingView()
-        .environment(\.locale, .init(identifier: "fr"))
 }
