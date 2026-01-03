@@ -7,6 +7,14 @@ struct ReframeTests {
     // 1. On définit un "Faux Service" qui respecte votre protocole AuthServiceProtocol
     // Il ne fait aucun appel réseau réel.
     struct MockAuthService: AuthServiceProtocol {
+        func loginWithApple(data: Reframe.AppleAuthData, definitiveEmail: String) async throws -> Reframe.User {
+            <#code#>
+        }
+
+        func loadUserFromSession() async throws -> Reframe.User {
+            <#code#>
+        }
+
 
         func login(email: String, password: String) async throws -> User {
             // Simulation : Si le mot de passe est "error", on simule un échec
@@ -50,16 +58,16 @@ struct ReframeTests {
     func testLoginSuccess() async throws {
         // GIVEN (Mise en place)
         let mockService = MockAuthService()
-        let session = Session(authService: mockService) // On injecte notre faux service
+        let session = UserSession(authService: mockService) // On injecte notre faux service
 
         // Vérification de l'état initial
-        #expect(session.isLoggedIn == false, "La session ne devrait pas être connectée au départ")
+        #expect(session.state.isLoggedIn == false, "La session ne devrait pas être connectée au départ")
 
         // WHEN (Action)
         try await session.login(email: "test@mail.com", password: "Password123$$")
 
         // THEN (Vérification)
-        #expect(session.isLoggedIn == true, "La session devrait être passée à l'état connecté")
+        #expect(session.state.isLoggedIn == true, "La session devrait être passée à l'état connecté")
 
         // On vérifie que les données de l'utilisateur fictif sont bien là
         #expect(session.user?.firstName == "Test")
@@ -78,14 +86,16 @@ struct ReframeTests {
     @MainActor
     func testLoginFailure() async {
         let mockService = MockAuthService()
-        let session = Session(authService: mockService)
+        let session = UserSession(authService: mockService)
 
         // On s'attend à ce que ça lance une erreur
         await #expect(throws: Error.self) {
             try await session.login(email: "test@reframe.com", password: "error")
         }
 
-        #expect(session.isLoggedIn == false, "La session devrait rester déconnectée après une erreur")
+        #expect(session.state.isLoggedIn == false, "La session devrait rester déconnectée après une erreur")
     }
 
 }
+
+//#warning("TODO: Simuler une panne serveur pour vérifier le timeout des requêtes")

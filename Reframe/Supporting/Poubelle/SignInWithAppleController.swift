@@ -1,4 +1,4 @@
-import AuthenticationServices
+/*import AuthenticationServices
 import UIKit
 import SwiftUI
 import Combine
@@ -50,3 +50,4 @@ extension SignInWithAppleController: ASAuthorizationControllerDelegate, ASAuthor
         print("Apple Sign-In failed: \(error.localizedDescription)")
     }
 }
+*/

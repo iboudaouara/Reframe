@@ -1,7 +1,7 @@
-import SwiftUI
+/*import SwiftUI
 
 struct InsightRow: View {
-    let insight: Insight
+    let insight: TacticalSession
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -24,9 +24,10 @@ struct InsightRow: View {
 }
 
 #Preview {
-    InsightRow(insight: Insight(
+    InsightRow(insight: TacticalSession(
         userThought: "I need to improve my SwiftUI skills",
         generatedInsight: "Practice building small SwiftUI components daily.",
         timestamp: Date()
     ))
 }
+*/

@@ -92,7 +92,7 @@ struct StrategicDashboardView: View {
             isSaved = true
         }
 
-        // Petit feedback haptique
+        // Petit Feedback haptique
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
     }

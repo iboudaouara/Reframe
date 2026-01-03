@@ -1,4 +1,4 @@
-import SwiftUI
+/*import SwiftUI
 import SwiftData
 
 struct InsightView: View {
@@ -145,7 +145,7 @@ struct InsightView: View {
                 return
             }
 
-            let newInsight = Insight(
+            let newInsight = TacticalSession(
                 userThought: userInput,
                 generatedInsight: insightText,
                 syncStatus: .pending
@@ -186,3 +186,4 @@ struct InsightView: View {
 #Preview {
     InsightView()
 }
+*/

@@ -189,7 +189,7 @@ final class ReframeServer {
         let generatedInsight: String
         let openaiToken: String?
     }
-    
+    /*
     struct RemoteInsight: Decodable {
         let id: Int
         let user_id: Int
@@ -197,8 +197,8 @@ final class ReframeServer {
         let generated_insight: String
         let created_at: Date
         
-        var localInsight: Insight {
-            return Insight(
+        var localInsight: TacticalSession {
+            return TacticalSession(
                 userThought: user_thought,
                 generatedInsight: generated_insight,
                 timestamp: created_at,
@@ -214,8 +214,8 @@ final class ReframeServer {
             case generated_insight
             case created_at
         }
-    }
-    
+    }*/
+/*
     // La structure de la réponse du serveur pour la suppression (DELETE)
     struct DeleteInsightResponse: Decodable {
         let message: String
@@ -320,7 +320,7 @@ final class ReframeServer {
             headers: headers,
             urlBase: AppURL.insightURL // Surcharge de la base d'URL
         )
-    }
+    }*/
 }
 
 // Dans ReframeServer.swift

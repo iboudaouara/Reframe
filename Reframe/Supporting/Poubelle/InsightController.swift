@@ -45,7 +45,7 @@ enum SyncStatus: String, Codable {
 }
 
 @Model
-final class Insight {
+final class Insightt {
     @Attribute(.unique) private(set) var id: UUID = UUID()
     
     var serverId: Int?

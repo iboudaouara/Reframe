@@ -1,8 +1,8 @@
-import SwiftUI
+/*import SwiftUI
 
 struct InsightDetailView: View {
     @Environment(\.dismiss) private var dismiss
-    let insight: Insight
+    let insight: TacticalSession
 
     var body: some View {
         NavigationStack {
@@ -59,9 +59,10 @@ struct InsightDetailView: View {
 }
 
 #Preview {
-    InsightDetailView(insight: Insight(
+    InsightDetailView(insight: TacticalSession(
         userThought: "I need to improve my SwiftUI skills",
         generatedInsight: "Practice building small SwiftUI components daily.",
         timestamp: Date()
     ))
 }
+*/

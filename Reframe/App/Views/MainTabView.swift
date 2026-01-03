@@ -22,6 +22,8 @@ struct MainTabView: View {
 
 #Preview {
     let session = UserSession()
+
     MainTabView()
         .environment(session)
+        .environment(\.locale, .init(identifier: "fr"))
 }

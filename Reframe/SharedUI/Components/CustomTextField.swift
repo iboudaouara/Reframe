@@ -33,6 +33,10 @@ struct CustomTextField: View {
 
 }
 
+#Preview {
+    CustomTextField(placeholder: LocalizedStringKey("Bonjour"), text: .constant("Texte de test"), isSecure: false).background(Color.black).textFieldStyle(RoundedBorderTextFieldStyle())
+    
+}
 /*extension TextContentType {
  init?(_ uiKitType: UITextContentType?) {
  guard let uiKitType else { return nil }

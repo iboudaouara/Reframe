@@ -1,4 +1,4 @@
-import SwiftData
+/*import SwiftData
 import SwiftUI
 
 final class InsightService {
@@ -38,7 +38,7 @@ final class InsightService {
         }
     }
     @MainActor
-    func uploadInsight(insight: Insight, token: String) async throws {
+    func uploadInsight(insight: TacticalSession, token: String) async throws {
         let remoteInsight = try await server.saveInsight(
             thought: insight.userThought,
             insight: insight.generatedInsight,
@@ -64,7 +64,7 @@ final class InsightService {
     @MainActor
     private func uploadPendingInsights(modelContext: ModelContext, token: String) async throws {
 
-        let allInsightsFetch = FetchDescriptor<Insight>()
+        let allInsightsFetch = FetchDescriptor<TacticalSession>()
         let allInsights = try modelContext.fetch(allInsightsFetch)
 
         let pendingInsights = allInsights.filter { $0.syncStatus == .pending || $0.syncStatus == .error }
@@ -87,7 +87,7 @@ final class InsightService {
     private func downloadRemoteInsights(modelContext: ModelContext, token: String) async throws {
         let remoteInsights = try await server.fetchUserInsights(token: token)
 
-        let localInsights = try modelContext.fetch(FetchDescriptor<Insight>())
+        let localInsights = try modelContext.fetch(FetchDescriptor<TacticalSession>())
         let localServerIds = Set(localInsights.compactMap { $0.serverId })
 
         for remote in remoteInsights {
@@ -107,7 +107,7 @@ extension InsightService {
     @MainActor
     func retryFailedSyncs(modelContext: ModelContext, token: String) async {
         let errorStatus = SyncStatus.error
-        let descriptor = FetchDescriptor<Insight>(
+        let descriptor = FetchDescriptor<TacticalSession>(
             predicate: #Predicate { $0.syncStatus == errorStatus }
         )
 
@@ -125,3 +125,4 @@ extension InsightService {
         }
     }
 }
+*/

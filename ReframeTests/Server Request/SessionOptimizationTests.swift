@@ -23,7 +23,7 @@ struct SessionOptimizationTests {
         let spyService = SpyAuthService()
         
         // 3. On injecte l'espion dans la Session
-        let session = Session(authService: spyService)
+        let session = UserSession(authService: spyService)
 
         // WHEN (Action)
         // On déclenche la vérification de session

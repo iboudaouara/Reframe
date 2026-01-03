@@ -18,4 +18,5 @@ struct LoadingView: View {
 
 #Preview {
     LoadingView()
+        .environment(\.locale, .init(identifier: "fr"))
 }
