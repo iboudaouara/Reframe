@@ -59,10 +59,10 @@ extension TacticalService {
         // Ajoute ici les autres champs que ton serveur renvoie (maneuver, etc.)
 
         // Convertisseur Remote -> Local
-        func toLocal() -> TacticalSession {
+        func toLocal() -> TacticalAnalysis {
             // Ici, tu devras reconstruire l'objet complet avec les données du serveur
             // Pour l'exemple, je mets des valeurs par défaut si manquantes
-            return TacticalSession(
+            return TacticalAnalysis(
                 situation: situation,
                 analysis: StrategicAnalysis(
                     maneuver: Maneuver(id: 0, name: "Inconnu", description: "", powerScore: 0, emotionalImpact: ""),
@@ -89,7 +89,7 @@ extension TacticalService {
     @MainActor
     private func uploadPendingSessions(modelContext: ModelContext, token: String) async {
         // Récupérer tout ce qui est "pending" ou "error"
-        let descriptor = FetchDescriptor<TacticalSession>(
+        let descriptor = FetchDescriptor<TacticalAnalysis>(
             predicate: #Predicate { $0.syncStatus == "pending" || $0.syncStatus == "error" }
         )
 
@@ -118,7 +118,7 @@ extension TacticalService {
             // APPEL AU SERVEUR
             let remoteSessions = try await server.fetchTacticalHistory(token: token)
 
-            let localDescriptor = FetchDescriptor<TacticalSession>()
+            let localDescriptor = FetchDescriptor<TacticalAnalysis>()
             let localSessions = try modelContext.fetch(localDescriptor)
             let localServerIds = Set(localSessions.compactMap { $0.serverId })
 

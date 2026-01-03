@@ -10,7 +10,7 @@ struct ReframeApp: App {
         WindowGroup {
             RootView()
                 .environment(session)
-                .modelContainer(for: TacticalSession.self)
+                .modelContainer(for: TacticalAnalysis.self)
         }
     }
 }

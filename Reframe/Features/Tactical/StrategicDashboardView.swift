@@ -85,7 +85,7 @@ struct StrategicDashboardView: View {
     }
 
     func saveAnalysis(analysis: StrategicAnalysis, situation: String) {
-        let session = TacticalSession(situation: situation, analysis: analysis)
+        let session = TacticalAnalysis(situation: situation, analysis: analysis)
         modelContext.insert(session)
 
         withAnimation {

@@ -343,7 +343,7 @@ struct SaveSessionResponse: Decodable {
 extension ReframeServer {
 
     // 1. Sauvegarder une session
-    func saveTacticalSession(_ session: TacticalSession, token: String) async throws -> Int {
+    func saveTacticalSession(_ session: TacticalAnalysis, token: String) async throws -> Int {
         let body = SaveTacticalSessionRequest(
             situation: session.situation,
             maneuverName: session.maneuverName,

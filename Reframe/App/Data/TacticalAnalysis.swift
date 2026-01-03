@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class TacticalSession {
+final class TacticalAnalysis {
     @Attribute(.unique) var id: UUID = UUID()
 
     var serverId: Int?

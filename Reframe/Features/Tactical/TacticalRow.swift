@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct TacticalRow: View {
-    let session: TacticalSession
+    let session: TacticalAnalysis
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {

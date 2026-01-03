@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct TacticalDetailView: View {
-    let session: TacticalSession
+    let session: TacticalAnalysis
     @Environment(\.dismiss) private var dismiss
 
     // On reconstruit l'objet Maneuver pour pouvoir réutiliser la ManeuverCard existante
