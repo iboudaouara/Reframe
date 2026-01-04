@@ -1,11 +1,3 @@
-//
-//  SessionOptimizationTests.swift
-//  Reframe
-//
-//  Created by Ibrahim Boudaouara on 2025-12-27.
-//
-
-
 import Testing
 import Foundation
 @testable import Reframe
@@ -23,7 +15,7 @@ struct SessionOptimizationTests {
         let spyService = SpyAuthService()
         
         // 3. On injecte l'espion dans la Session
-        let session = UserSession(authService: spyService)
+        let session = Session(authService: spyService)
 
         // WHEN (Action)
         // On déclenche la vérification de session

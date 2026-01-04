@@ -4,17 +4,31 @@ import SwiftData
 @Observable
 final class Session {
 
-    private let authService = AuthService.shared
+    private let authService: AuthServiceProtocol
 
-    private(set) var state: SessionState = .unauthenticated
+    private(set) var state: SessionState = .loading
 
     var user: User? {
         guard case .authenticated(let u) = state else { return nil }
         return u
     }
 
-    init() {
-        //startSessionCheck()
+    init(authService: AuthServiceProtocol = AuthService.shared) {
+        self.authService = authService
+        startSessionCheck()
+    }
+
+    @MainActor
+    func login(email: String, password: String) async throws {
+        state = .loading
+
+        do {
+            let user = try await authService.login(email: email, password: password)
+            completeAuthentication(with: user)
+        } catch {
+            state = .unauthenticated
+            throw error
+        }
     }
 
     private func startSessionCheck() {
@@ -24,18 +38,18 @@ final class Session {
     }
 
     @MainActor
-        func restorePreviousSession() async {
-            // Le chargement devient un état transitoire géré par la vue ou un flag local
-            do {
-                let user = try await authService.loadUserFromSession()
-                self.state = .authenticated(user) // Utilisation de votre idée de session fusionnée
-            } catch {
-                self.state = .unauthenticated
-            }
+    func restorePreviousSession() async {
+        // Le chargement devient un état transitoire géré par la vue ou un flag local
+        do {
+            let user = try await authService.loadUserFromSession()
+            self.state = .authenticated(user) // Utilisation de votre idée de session fusionnée
+        } catch {
+            self.state = .unauthenticated
         }
+    }
 
     @MainActor
-    private func checkSessionStatus() async {
+    func checkSessionStatus() async {
         state = .loading
 
         try? await Task.sleep(nanoseconds: 500_000_000)
@@ -87,24 +101,14 @@ final class Session {
         state = .guest
     }
 
-    @MainActor
-    func login(email: String, password: String) async throws {
-        state = .loading
-        do {
-            let user = try await authService.login(email: email, password: password)
-            completeAuthentication(with: user)
-        } catch {
-            state = .unauthenticated
-            throw error
-        }
-    }
+
 
     @MainActor
     func signup(firstName: String, lastName: String, email: String, password: String) async throws {
         state = .loading
 
         do {
-            let user = try await AuthService.shared.signup(
+            let user = try await authService.signup(
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
@@ -127,7 +131,7 @@ final class Session {
                 throw SessionError.missingToken
             }
 
-            let user = try await AuthService.shared.loginWithApple(data: data, definitiveEmail: definitiveEmail)
+            let user = try await authService.loginWithApple(data: data, definitiveEmail: definitiveEmail)
 
             completeAuthentication(with: user)
             KeychainManager.shared.saveEmailForAppleID(definitiveEmail, for: data.userIdentifier)
@@ -142,7 +146,7 @@ final class Session {
 
     @MainActor
     func logout() {
-        AuthService.shared.logout()
+        authService.logout()
         state = .unauthenticated
     }
 
@@ -152,7 +156,7 @@ final class Session {
             throw SessionError.missingToken
         }
 
-        _ = try await AuthService.shared.deleteAccount(token: currentUser.token)
+        _ = try await authService.deleteAccount(token: currentUser.token)
 
         try modelContext.delete(model: TacticalAnalysis.self)
 
@@ -177,13 +181,11 @@ final class Session {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            Task(){
-                await self?.logout()
+            Task { @MainActor in
+                self?.logout()
             }
         }
     }
-
-
 }
 
 extension Notification.Name {

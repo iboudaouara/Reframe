@@ -3,6 +3,14 @@ import Foundation
 @testable import Reframe
 
 class SpyAuthService: AuthServiceProtocol {
+    func loginWithApple(data: AppleAuthData, definitiveEmail: String) async throws -> User {
+        return User(id: 0, email: "", firstName: "", lastName: "", token: "", profileIcon: .avatar1)
+    }
+
+    func loadUserFromSession() async throws -> User {
+        return User(id: 0, email: "", firstName: "", lastName: "", token: "", profileIcon: .avatar1)
+    }
+
     var verifyTokenCallCount = 0
 
     // Cette fonction ne fait rien, sauf compter qu'elle a été appelée

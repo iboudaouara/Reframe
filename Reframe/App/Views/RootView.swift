@@ -14,9 +14,6 @@ struct RootView: View {
             case .unauthenticated:
                 AuthView()
             }
-        }.task {
-            // C'est ici que la vérification se fait, de manière sécurisée et liée au cycle de vie
-            await session.restorePreviousSession()
         }
     }
 }

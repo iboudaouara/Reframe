@@ -71,7 +71,7 @@ struct AppButton: View {
             .padding()
             .background(background)
             .overlay(
-                Capsule().stroke(border, lineWidth: 5)
+                Capsule().stroke(border, lineWidth: 3)
             )
             .clipShape(Capsule())
             .frame(maxWidth: 160)

@@ -1,3 +1,7 @@
+import Testing
+import Foundation
+@testable import Reframe
+
 struct MockAuthService: AuthServiceProtocol {
 
         func loginWithApple(data: AppleAuthData, definitiveEmail: String) async throws -> User {
