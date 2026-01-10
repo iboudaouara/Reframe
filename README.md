@@ -13,3 +13,5 @@ Reframe helps you step back from immediate reactions and analyze situations obje
 You can download the latest version of Reframe directly from the App Store:
 
 [Download Reframe on the App Store](https://apps.apple.com/ca/app/reframe/id6756591868)
+
+© 2026 Ibrahim Boudaouara. All Rights Reserved.
