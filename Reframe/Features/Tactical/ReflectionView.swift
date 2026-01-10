@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct StrategicDashboardView: View {
+struct ReflectionView: View {
     @Environment(UserSession.self) private var session
     @Environment(\.modelContext) private var modelContext
     @State private var isSaved: Bool = false
@@ -30,7 +30,7 @@ struct StrategicDashboardView: View {
                     if let analysis = analysis {
                         ManeuverCard(maneuver: analysis.maneuver)
                             .transition(.move(edge: .top).combined(with: .opacity))
-                        Text("CONTRE-MESURES RECOMMANDÉES")
+                        Text("FRESH PERSPECTIVES")
                             .font(.caption)
                             .fontWeight(.bold)
                             .foregroundStyle(.gray)
@@ -92,6 +92,13 @@ struct StrategicDashboardView: View {
             isSaved = true
         }
 
+        Task {
+                // Sauvegarde le contexte local d'abord pour être sûr
+                //try? modelContext.save()
+                // Force l'envoi au serveur
+                //await session.synchronize(modelContext: modelContext)
+            }
+
         // Petit Feedback haptique
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
@@ -99,14 +106,14 @@ struct StrategicDashboardView: View {
 
     var headerView: some View {
         HStack {
-            Image(systemName: "shield.righthalf.filled")
+            Image(systemName: "brain.head.profile")
                 .font(.system(size:28))
                 .foregroundStyle(.white)
             VStack(alignment: .leading) {
-                Text("RADAR SOCIAL")
+                Text("REFLECTION SPACE")
                     .font(.headline)
                     .foregroundStyle(.white)
-                Text("Analyse de rapports de force")
+                Text("Clarify your thoughts and emotions")
                     .font(.caption)
                     .foregroundStyle(.gray)
             }
@@ -117,7 +124,7 @@ struct StrategicDashboardView: View {
 
     var inputSection: some View {
         VStack(spacing: 20) {
-            Text("Quelle interaction vous a destabilisé ?")
+            Text("What situation do you want to explore?")
                 .font(.title3)
                 .fontWeight(.bold)
                 .foregroundStyle(.white)
@@ -137,7 +144,7 @@ struct StrategicDashboardView: View {
                     if isLoading {
                         ProgressView().tint(.black)
                     } else {
-                        Text("DÉCODER LA SITUATION")
+                        Text("ADD ENTRY")
                             .fontWeight(.bold)
                     }
                 }
@@ -177,16 +184,16 @@ struct ManeuverCard:View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("MANOEUVRE DÉTECTÉE")
+                Text("CONTEXT IDENTIFIED")
                     .font(.caption)
                     .fontWeight(.bold)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.indigo)
                     .padding(6)
                     .background(Color.red.opacity(0.2))
                     .cornerRadius(4)
                 Spacer()
                 HStack(spacing: 4) {
-                    Text("DOMINATION ADVERSE:")
+                    Text("FELT IMPACT:")
                         .font(.caption2)
                         .foregroundStyle(.gray)
                     Text("\(maneuver.powerScore)%")
@@ -206,7 +213,7 @@ struct ManeuverCard:View {
             Divider().background(Color.white.opacity(0.2))
 
             HStack {
-                Image(systemName: "exclamationmark.triangle")
+                Image(systemName: "waveform.path.ecg")
                     .foregroundStyle(.yellow)
                 Text(maneuver.emotionalImpact)
                     .font(.caption)
@@ -283,5 +290,5 @@ extension Color {
 }
 
 #Preview {
-    StrategicDashboardView()
+    ReflectionView()
 }

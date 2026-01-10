@@ -7,7 +7,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
-            StrategicDashboardView()
+            ReflectionView()
                 .tabItem { Label("Tactical", systemImage: "shield.righthalf.filled") }
             HistoryView()
                 .tabItem { Label("History", systemImage: "clock") }
