@@ -4,12 +4,13 @@ import SwiftData
 @main
 struct ReframeApp: App {
 
-    @State private var session = Session()
+    @State private var userSession = UserSession()
 
     var body: some Scene {
+
         WindowGroup {
             RootView()
-                .environment(session)
+                .environment(userSession)
                 .modelContainer(for: TacticalAnalysis.self)
         }
     }

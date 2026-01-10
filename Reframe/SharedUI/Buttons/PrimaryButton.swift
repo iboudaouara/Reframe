@@ -100,7 +100,7 @@ struct AppButton: View {
 }
 
 #Preview {
-    let session = Session()
+    let session = UserSession()
 
     AuthView()
         .environment(session)

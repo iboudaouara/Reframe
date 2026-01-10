@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct SignUpView: View {
-    @Environment(Session.self) var session
+    @Environment(UserSession.self) var session
+    @Environment(\.modelContext) private var modelContext
     @State private var isLoading = false
     @State private var errorMessage: String?
 
@@ -80,6 +82,7 @@ struct SignUpView: View {
         Task {
             isLoading = true
             do {
+                try? modelContext.delete(model: TacticalAnalysis.self)
                 try await session.signup(
                     firstName: firstName.trimmingCharacters(in: .whitespacesAndNewlines),
                     lastName: lastName.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -93,7 +96,7 @@ struct SignUpView: View {
 }
 
 #Preview {
-    let session = Session()
+    let session = UserSession()
     SignUpView()
         .environment(session)
 }

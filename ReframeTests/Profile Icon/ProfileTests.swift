@@ -9,7 +9,7 @@ struct ProfileTests {
     func testAvatarUpdateLogic() async throws {
         
         let spy = SpyAuthService()
-        let session = Session(authService: spy)
+        let session = UserSession(authService: spy)
         
         try await Task.sleep(nanoseconds: 600_000_000)
         

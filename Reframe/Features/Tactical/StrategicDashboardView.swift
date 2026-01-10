@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct StrategicDashboardView: View {
-    @Environment(Session.self) private var session
+    @Environment(UserSession.self) private var session
     @Environment(\.modelContext) private var modelContext
     @State private var isSaved: Bool = false
 

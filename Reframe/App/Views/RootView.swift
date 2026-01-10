@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RootView: View {
     
-    @Environment(Session.self) private var session
+    @Environment(UserSession.self) private var session
 
     var body: some View {
         Group {

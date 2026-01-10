@@ -50,7 +50,7 @@ final class TacticalService {
 import SwiftData
 
 extension TacticalService {
-
+/*
     // Structure pour mapper la réponse du serveur (à adapter selon ton API réelle)
     struct RemoteTacticalSession: Decodable {
         let id: Int
@@ -70,7 +70,7 @@ extension TacticalService {
                 )
             )
         }
-    }
+    }*/
 
     @MainActor
     func synchronize(modelContext: ModelContext, token: String) async {
@@ -134,6 +134,34 @@ extension TacticalService {
             }
         } catch {
             print("❌ Erreur téléchargement historique: \(error)")
+        }
+    }
+
+    
+}
+
+extension TacticalService {
+    struct RemoteTacticalSession: Decodable {
+        let id: Int
+        let situation: String
+        let maneuver_name: String
+        let maneuver_description: String
+        let power_score: Int
+        let emotional_impact: String
+        let created_at: Date
+
+        func toLocal() -> TacticalAnalysis {
+            // On crée un objet "vide" d'analyse pour l'init, puis on remplit
+            let analysis = StrategicAnalysis(
+                maneuver: Maneuver(id: 0, name: maneuver_name, description: maneuver_description, powerScore: power_score, emotionalImpact: emotional_impact),
+                recommendedMoves: []
+            )
+
+            let local = TacticalAnalysis(situation: situation, analysis: analysis)
+            local.serverId = id
+            local.syncStatus = "synced"
+            local.timestamp = created_at
+            return local
         }
     }
 }

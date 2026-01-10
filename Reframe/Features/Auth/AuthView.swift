@@ -1,8 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct AuthView: View {
 
-    @Environment(Session.self) private var session
+    @Environment(UserSession.self) private var session
     @Environment(\.modelContext) private var modelContext
 
     @State private var path = NavigationPath()
@@ -42,7 +43,10 @@ struct AuthView: View {
                                     }
                                 }
                                 Separator(text: "Or")
-                                AppleSignInButton()
+                                AppleSignInButton().task {
+                                    try? modelContext.delete(model: TacticalAnalysis.self)
+                                    await session.synchronize(modelContext: modelContext)
+                                }
 
                                 Button("Continue as Guest") {
                                     withAnimation(.easeIn(duration: 0.5)) {

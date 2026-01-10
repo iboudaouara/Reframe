@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct LoginView: View {
     @State private var firstName = ""
@@ -7,8 +8,9 @@ struct LoginView: View {
     @State private var password = ""
     @State private var isLoading = false
     @State private var errorMessage: String?
-    @Environment(Session.self) private var session
-    
+    @Environment(UserSession.self) private var session
+    @Environment(\.modelContext) private var modelContext
+
     private var isShowingAlert: Binding<Bool> {
         Binding(
             get: { errorMessage != nil },
@@ -56,7 +58,13 @@ struct LoginView: View {
         Task {
             isLoading = true
             do {
+                try? modelContext.delete(model: TacticalAnalysis.self)
                 try await session.login(email: email, password: password)
+
+                print("⏳ Login réussi. Récupération de l'historique...")
+                                await session.synchronize(modelContext: modelContext)
+
+                                print("✅ Synchro terminée. Accès à l'accueil.")
             } catch {
                 errorMessage = error.localizedDescription
             }
@@ -69,7 +77,7 @@ struct LoginView: View {
 
 
 #Preview {
-    let session = Session()
+    let session = UserSession()
     LoginView()
         .environment(session)
 }

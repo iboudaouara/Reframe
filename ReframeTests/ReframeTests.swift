@@ -13,7 +13,7 @@ struct ReframeTests {
     @MainActor
     func testLoginSuccess() async throws {
         let mockService = MockAuthService()
-        let session = Session(authService: mockService)
+        let session = UserSession(authService: mockService)
 
         #expect(session.state.isLoggedIn == false, "La session ne devrait pas être connectée au départ")
 
@@ -35,7 +35,7 @@ struct ReframeTests {
     @MainActor
     func testLoginFailure() async {
         let mockService = MockAuthService()
-        let session = Session(authService: mockService)
+        let session = UserSession(authService: mockService)
 
         // On s'attend à ce que ça lance une erreur
         await #expect(throws: Error.self) {
@@ -50,7 +50,7 @@ struct ReframeTests {
     func testSignupFlowSuccess() async throws {
 
         let mock = MockAuthService()
-        let session = Session(authService: mock)
+        let session = UserSession(authService: mock)
 
         #expect(session.state.isLoggedIn == false)
 

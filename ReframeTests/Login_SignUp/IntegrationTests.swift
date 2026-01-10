@@ -86,7 +86,7 @@ struct IntegrationTests {
     func testDeleteAccountFlow() async throws {
         // 1. GIVEN : Un utilisateur est déjà connecté avec un Mock
         let mock = AuthService.shared
-        let session = Session(authService: mock)
+        let session = UserSession(authService: mock)
 
         // On simule une connexion réussie
         try await session.login(email: "test@mail.com", password: "VraiPass123$")

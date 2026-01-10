@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @Observable
-final class Session {
+final class UserSession {
 
     private let authService: AuthServiceProtocol
 
@@ -25,6 +25,7 @@ final class Session {
         do {
             let user = try await authService.login(email: email, password: password)
             completeAuthentication(with: user)
+
         } catch {
             state = .unauthenticated
             throw error
